@@ -1,0 +1,7 @@
+git clone git@github.com:mscsws2009/MscsChess.git
+
+cd MscsChess
+
+cmake .
+
+make
