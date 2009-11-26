@@ -5,3 +5,5 @@ cd MscsChess
 cmake .
 
 make
+
+test
