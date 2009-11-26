@@ -19,6 +19,7 @@ public:
     void Print() const { std::cout << shortName; }
 
     virtual bool Attacks(int destination, Board& board) const = 0;
+    virtual bool CanMoveTo(int destination, Board& board) const  { return false; };
 
 protected:
     Piece(Side s, int square) : side(s), square(square) {};
