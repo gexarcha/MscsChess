@@ -1,3 +1,11 @@
+/**
+@mainpage MscsChess
+
+This is the example project of the winter 2009/2010 Software Design and Construction class.
+
+\todo Test ToDo
+*/
+
 #include "Board.h"
 #include "Piece.h"
 
