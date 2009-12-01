@@ -104,7 +104,6 @@ Bishop::Bishop(Side s, int square) : Piece(s, square) {
     ray[3] = 11;
 }
 
-
 Knight::Knight(Side s, int square) : Piece(s, square) {
     shortName = (side == WHITE) ? 'N' : 'n';
     nRay = 8;
