@@ -1,6 +1,7 @@
 #include "Piece.h"
 #include "Board.h"
 
+
 int Piece::mailbox[120] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
