@@ -34,6 +34,13 @@ bool Piece::CrawlerAttacks(int destination) const {
     return false;
 }
 
+bool Piece::CrawlerCanMoveTo(int destination, Board& board) const {
+    // cannot move to a square of same side
+    if( board.IsSide(side, destination) ) return false;
+    
+    return CrawlerAttacks(destination);
+}
+
 bool Piece::SliderAttacks(int destination, Board& board) const {
     for(int i=0; i<nRay; ++i) {
         for(int step=1; step<8; ++step) {
@@ -44,6 +51,13 @@ bool Piece::SliderAttacks(int destination, Board& board) const {
         }
     }
     return false;
+}
+
+bool Piece::SliderCanMoveTo(int destination, Board& board) const {
+    // cannot move to a square of same side
+    if( board.IsSide(side, destination) ) return false;
+    
+    return SliderAttacks(destination, board);
 }
 
 King::King(Side s, int square) : Piece(s, square) {
@@ -107,16 +121,24 @@ Knight::Knight(Side s, int square) : Piece(s, square) {
 
 
 Pawn::Pawn(Side s, int square) : Piece(s, square) {
-    shortName = (side == WHITE) ? 'P' : 'p';
-    nRay = 1;
     if(side == WHITE) {
+        shortName = 'P';
         ray[0] = -10;
         ray[1] = -11;
         ray[2] = -9;
+
+        // misuse of nRay to signal pawn on starting position
+        if(47 < square && square < 56) nRay = 1;
+        else                           nRay = 0;
     } else {
+        shortName = 'P';
         ray[0] = 10;
         ray[1] = 11;
         ray[2] = 9;
+        
+        // misuse of nRay to signal pawn on starting position
+        if(15 < square && square < 24) nRay = 1;
+        else                           nRay = 0;
     }
 
 }
@@ -124,5 +146,24 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
 bool Pawn::Attacks(int destination, Board &) const {
     if( destination == mailbox[ mailbox2board[square] + ray[1] ] ) return true;
     if( destination == mailbox[ mailbox2board[square] + ray[2] ] ) return true;
+    return false;
+}
+
+bool Pawn::CanMoveTo(int destination, Board& board) const {
+    // cannot move to a square of same side
+    if( board.IsSide(side, destination) ) return false;
+    
+    // capture
+    if( destination == mailbox[ mailbox2board[square] + ray[1] ]  && board.IsOccupied(destination) ) return true;
+    if( destination == mailbox[ mailbox2board[square] + ray[2] ]  && board.IsOccupied(destination) ) return true;
+    
+    //advance one step
+    int onestep = mailbox[ mailbox2board[square] + ray[0] ];
+    if( destination == onestep ) return true;
+    
+    //advance two steps
+    if( nRay == 0 ) return false;
+    if( destination == mailbox[ mailbox2board[onestep] + ray[0] ]  && board.IsOccupied(destination) ) return true;
+ 
     return false;
 }

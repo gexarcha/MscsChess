@@ -26,6 +26,9 @@ protected:
 
     bool CrawlerAttacks(int destination) const;
     bool SliderAttacks(int destination, Board& board) const;
+    
+    bool CrawlerCanMoveTo(int destination, Board& board) const;
+    bool SliderCanMoveTo(int destination, Board& board) const;
 
     Side side;
     int square;
@@ -44,6 +47,7 @@ public:
     King(Side s, int square);	
 
     virtual bool Attacks(int destination, Board&) const { return CrawlerAttacks(destination); }
+    virtual bool CanMoveTo(int destination, Board& board) const { return CrawlerCanMoveTo(destination, board); }
 
 };
 
@@ -52,7 +56,7 @@ public:
     Queen(Side s, int square);	
     
     virtual bool Attacks(int destination, Board& board) const { return SliderAttacks(destination, board); }
-
+    virtual bool CanMoveTo(int destination, Board& board) const { return SliderCanMoveTo(destination, board); }
 };
 
 class Rock : public Piece {
@@ -60,7 +64,8 @@ public:
     Rock(Side s, int square);	
 
     virtual bool Attacks(int destination, Board& board) const { return SliderAttacks(destination, board); }
-
+    virtual bool CanMoveTo(int destination, Board& board) const { return SliderCanMoveTo(destination, board); }
+    
 };
 
 class Bishop : public Piece {
@@ -68,6 +73,7 @@ public:
     Bishop(Side s, int square);	
 
     virtual bool Attacks(int destination, Board& board) const { return SliderAttacks(destination, board); }
+    virtual bool CanMoveTo(int destination, Board& board) const { return SliderCanMoveTo(destination, board); }
 
 };
 
@@ -76,6 +82,7 @@ public:
     Knight(Side s, int square);	
   
     virtual bool Attacks(int destination, Board& ) const { return CrawlerAttacks(destination); }
+    virtual bool CanMoveTo(int destination, Board& board) const { return CrawlerCanMoveTo(destination, board); }
 
 };
 
@@ -85,6 +92,7 @@ public:
     Pawn(Side s, int square);	
 
     virtual bool Attacks(int destination, Board&) const;
+    virtual bool CanMoveTo(int destination, Board& board) const;
 };
 
 
