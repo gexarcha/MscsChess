@@ -76,6 +76,15 @@ King::King(Side s, int square) : Piece(s, square) {
     ray[7] = 11;
 }
 
+bool King::Attacks(int destination, Board&) const { 
+    return CrawlerAttacks(destination); 
+}
+
+bool King::CanMoveTo(int destination, Board& board) const { 
+    return CrawlerCanMoveTo(destination, board); 
+}
+
+
 Queen::Queen(Side s, int square) : Piece(s, square) {
     shortName = (side == WHITE) ? 'Q' : 'q';
     nRay = 8;
@@ -89,6 +98,14 @@ Queen::Queen(Side s, int square) : Piece(s, square) {
     ray[7] = 11;
 }
 
+bool Queen::Attacks(int destination, Board& board) const { 
+    return SliderAttacks(destination, board); 
+}
+
+bool Queen::CanMoveTo(int destination, Board& board) const { 
+    return SliderCanMoveTo(destination, board); 
+}
+
 Rock::Rock(Side s, int square) : Piece(s, square) {
     shortName = (side == WHITE) ? 'R' : 'r';
     nRay = 4;
@@ -98,6 +115,15 @@ Rock::Rock(Side s, int square) : Piece(s, square) {
     ray[3] = 10;
 }
 
+bool Rock::Attacks(int destination, Board& board) const { 
+    return SliderAttacks(destination, board); 
+}
+
+bool Rock::CanMoveTo(int destination, Board& board) const { 
+    return SliderCanMoveTo(destination, board); 
+}
+
+
 Bishop::Bishop(Side s, int square) : Piece(s, square) {
     shortName = (side == WHITE) ? 'B' : 'b';
     nRay = 4;
@@ -106,6 +132,15 @@ Bishop::Bishop(Side s, int square) : Piece(s, square) {
     ray[2] = 9;
     ray[3] = 11;
 }
+
+bool Bishop::Attacks(int destination, Board& board) const { 
+    return SliderAttacks(destination, board); 
+}
+
+bool Bishop::CanMoveTo(int destination, Board& board) const {
+    return SliderCanMoveTo(destination, board); 
+}
+
 
 Knight::Knight(Side s, int square) : Piece(s, square) {
     shortName = (side == WHITE) ? 'N' : 'n';
@@ -120,7 +155,13 @@ Knight::Knight(Side s, int square) : Piece(s, square) {
     ray[7] = 21;
 }
 
+bool Knight::Attacks(int destination, Board& ) const { 
+   return CrawlerAttacks(destination); 
+}
 
+bool Knight::CanMoveTo(int destination, Board& board) const { 
+    return CrawlerCanMoveTo(destination, board); 
+}
 
 Pawn::Pawn(Side s, int square) : Piece(s, square) {
     if(side == WHITE) {
@@ -137,7 +178,7 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
         ray[0] = 10;
         ray[1] = 11;
         ray[2] = 9;
-        
+ 
         // misuse of nRay to signal pawn on starting position
         if(7 < square && square < 16) nRay = 1;
         else                           nRay = 0;

@@ -47,8 +47,9 @@ class King : public Piece {
 public:
     King(Side s, int square);	
 
-    virtual bool Attacks(int destination, Board&) const { return CrawlerAttacks(destination); }
-    virtual bool CanMoveTo(int destination, Board& board) const { return CrawlerCanMoveTo(destination, board); }
+    virtual bool Attacks(int destination, Board&) const;
+
+    virtual bool CanMoveTo(int destination, Board& board) const;
 
 };
 
@@ -56,16 +57,16 @@ class Queen : public Piece {
 public:
     Queen(Side s, int square);	
     
-    virtual bool Attacks(int destination, Board& board) const { return SliderAttacks(destination, board); }
-    virtual bool CanMoveTo(int destination, Board& board) const { return SliderCanMoveTo(destination, board); }
+    virtual bool Attacks(int destination, Board& board) const;
+    virtual bool CanMoveTo(int destination, Board& board) const;
 };
 
 class Rock : public Piece {
 public:
     Rock(Side s, int square);	
 
-    virtual bool Attacks(int destination, Board& board) const { return SliderAttacks(destination, board); }
-    virtual bool CanMoveTo(int destination, Board& board) const { return SliderCanMoveTo(destination, board); }
+    virtual bool Attacks(int destination, Board& board) const;
+    virtual bool CanMoveTo(int destination, Board& board) const;
     
 };
 
@@ -73,17 +74,17 @@ class Bishop : public Piece {
 public:
     Bishop(Side s, int square);	
 
-    virtual bool Attacks(int destination, Board& board) const { return SliderAttacks(destination, board); }
-    virtual bool CanMoveTo(int destination, Board& board) const { return SliderCanMoveTo(destination, board); }
+    virtual bool Attacks(int destination, Board& board) const;
+    virtual bool CanMoveTo(int destination, Board& board) const;
 
 };
 
 class Knight : public Piece {
 public:
     Knight(Side s, int square);	
-  
-    virtual bool Attacks(int destination, Board& ) const { return CrawlerAttacks(destination); }
-    virtual bool CanMoveTo(int destination, Board& board) const { return CrawlerCanMoveTo(destination, board); }
+
+    virtual bool Attacks(int destination, Board& ) const;
+    virtual bool CanMoveTo(int destination, Board& board) const;
 
 };
 
@@ -94,7 +95,7 @@ public:
 
     virtual bool Attacks(int destination, Board&) const;
     virtual bool CanMoveTo(int destination, Board& board) const;
-    //virtual void MoveTo(int to) { square = to; nRay = 0; }
+
 };
 
 
