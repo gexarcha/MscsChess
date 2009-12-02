@@ -14,12 +14,13 @@ public:
     bool IsWhite() const { return side==WHITE; };
     bool IsBlack() const { return side==BLACK; };
     Side GetSide() const { return side; };
-    Side GetOppositeSide() const { return (side == WHITE) ? BLACK : WHITE; }
+    Side GetOppositeSide() const { return (side == WHITE) ? BLACK : WHITE; };
 
-    void Print() const { std::cout << shortName; }
+    void Print() const { std::cout << shortName; };
 
     virtual bool Attacks(int destination, Board& board) const = 0;
     virtual bool CanMoveTo(int destination, Board& board) const  { return false; };
+    void MoveTo(int to) { square = to; if(nRay==1) nRay=0;};
 
 protected:
     Piece(Side s, int square) : side(s), square(square) {};
@@ -93,6 +94,7 @@ public:
 
     virtual bool Attacks(int destination, Board&) const;
     virtual bool CanMoveTo(int destination, Board& board) const;
+    //virtual void MoveTo(int to) { square = to; nRay = 0; }
 };
 
 

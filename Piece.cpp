@@ -1,6 +1,8 @@
 #include "Piece.h"
 #include "Board.h"
 
+#include <iostream>
+using namespace std;
 
 int Piece::mailbox[120] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -131,13 +133,13 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
         if(47 < square && square < 56) nRay = 1;
         else                           nRay = 0;
     } else {
-        shortName = 'P';
+        shortName = 'p';
         ray[0] = 10;
         ray[1] = 11;
         ray[2] = 9;
         
         // misuse of nRay to signal pawn on starting position
-        if(15 < square && square < 24) nRay = 1;
+        if(7 < square && square < 16) nRay = 1;
         else                           nRay = 0;
     }
 
@@ -150,6 +152,7 @@ bool Pawn::Attacks(int destination, Board &) const {
 }
 
 bool Pawn::CanMoveTo(int destination, Board& board) const {
+    cout << "Pawn::CanMoveTo" << endl;
     // cannot move to a square of same side
     if( board.IsSide(side, destination) ) return false;
     
@@ -159,11 +162,12 @@ bool Pawn::CanMoveTo(int destination, Board& board) const {
     
     //advance one step
     int onestep = mailbox[ mailbox2board[square] + ray[0] ];
+    if( board.IsOccupied(onestep) ) return false;
     if( destination == onestep ) return true;
     
     //advance two steps
-    if( nRay == 0 ) return false;
-    if( destination == mailbox[ mailbox2board[onestep] + ray[0] ]  && board.IsOccupied(destination) ) return true;
+    if( nRay == 0 || board.IsOccupied(onestep)) return false;
+    if( destination == mailbox[ mailbox2board[onestep] + ray[0] ] ) return true;
  
     return false;
 }

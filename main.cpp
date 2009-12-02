@@ -1,3 +1,11 @@
+/**
+@mainpage MscsChess
+
+This is the example project of the winter 2009/2010 Software Design and Construction class.
+
+\todo Test ToDo
+*/
+
 #include "Board.h"
 #include "Piece.h"
 
@@ -40,7 +48,11 @@ int main() {
             continue;
         }
 
-        cout << " Error: unknown command " << command << endl;
+        try {
+            board.Move(command);
+        } catch (string& msg) {
+            cout << msg << endl;
+        }
     } 
 
 }
@@ -60,6 +72,7 @@ string prompt() {
     cin >> input;
     return input;
 }
+
 
 #include <vector>
 
@@ -169,7 +182,7 @@ bool testBlockedQueenAttacks() {
     cout << name << endl;
 
     Board b;
-    b.Init("8/4p3/8/1b3b2/8/2N5/8/8");
+    b.Init("8/4p3/8/1b3b2/8/2N5/8/8 w");
     Queen p(Piece::BLACK, 28);
 
     vector<bool> result(64,false);

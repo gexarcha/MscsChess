@@ -102,6 +102,10 @@ void Board::Init(std::string fenPosition) {
                 throw "invalid char in fenPosition";
         }
     }
+    if(fenPosition[iFen+1] == 'w') sideToMove = Piece::WHITE;
+    else if(fenPosition[iFen+1] == 'b') sideToMove = Piece::BLACK;
+    else throw "invalid char in fenPosition";
+
 }
 
 void Board::Show() {
@@ -118,3 +122,67 @@ void Board::Show() {
     cout << "\n   --------------------------------\n";
     cout << "     a   b   c   d   e   f   g   h \n\n";
 }
+
+void Board::Move(std::string move) {
+
+    // a move must have 4 or 5 characters
+    if( move.size() < 4 ) throw std::string("Invalid command: ") + move;
+
+    // decode from and to field
+    int from = -1;
+    int to = -1 ;
+    if( move.size() >= 4 ) {
+       std::string fromString(move,0,2);
+       std::string toString(move,2,2);
+       cout << "fromString: " << fromString << " toString: " << toString << endl;
+
+       from = string2square(fromString);
+       to = string2square(toString);
+
+       cout << "from: " << from << " to: " << to << endl;
+
+       if (from == -1 || to == -1) throw std::string("Invalid command: ") + move;
+    }
+    cout << "from: " << from << " to: " << to << endl;
+    // now check whether the move is valid
+    if( IsEmpty(from) ) throw std::string("Invalid Move: from square empty");
+    if( !IsSide(sideToMove, from) ) throw std::string("Invalid Move: wrong color");
+    if( !board[from]->CanMoveTo(to, *this) ) throw std::string("Invalid Move ");
+
+    // now we have a legal move
+    Move(from, to);
+
+
+
+}
+
+void Board::Move(int from, int to) {
+
+    if( IsOccupied(to) ) {
+        delete board[to];
+        board[to] = 0;
+    }
+    board[from]->MoveTo(to);
+
+    board[to] = board[from];
+    board[from] = 0;
+    SwitchSide();
+}
+
+
+int Board::string2square(std::string square) {
+   int column = square[0] - 'a';
+   int line = square[1] - '1';
+
+   if( -1 < column && column < 8 && -1 < line && line < 8)
+      return (7 - line) * 8 + column;
+   else return -1;
+}
+
+void Board::SwitchSide() {
+   if (sideToMove == Piece::WHITE ) sideToMove = Piece::BLACK;
+   else                             sideToMove = Piece::WHITE;
+}
+
+
+
