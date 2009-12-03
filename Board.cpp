@@ -13,6 +13,10 @@ void Board::Init(std::string fenPosition) {
     int iWhite = 0;
     int iBlack = 0;
     int iSquare = 0;
+    
+    // make space for the king in the first field
+    piece[0].push_back( (Piece*)0 );
+    piece[1].push_back( (Piece*)0 );
     while(iSquare < 64) {
         char c = fenPosition[iFen++];
         Piece *p;
@@ -42,7 +46,7 @@ void Board::Init(std::string fenPosition) {
 
             case 'k':
                 p = new King(Piece::BLACK, iSquare);
-                piece[0].push_back(p);
+                piece[0][0] = p;
                 board[iSquare++] = p;
                 break;
 
@@ -78,7 +82,7 @@ void Board::Init(std::string fenPosition) {
 
             case 'K':
                 p = new King(Piece::WHITE, iSquare);
-                piece[1].push_back(p);
+                piece[1][0] = p;
                 board[iSquare++] = p;
                 break;
 

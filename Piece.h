@@ -21,6 +21,7 @@ public:
     virtual bool Attacks(int destination, Board& board) const = 0;
     virtual bool CanMoveTo(int destination, Board& board) const  { return false; };
     void MoveTo(int to) { square = to; if(nRay==1) nRay=0;};
+    int GetSquare() const  { return square; }
 
 protected:
     Piece(Side s, int square) : side(s), square(square) {};
