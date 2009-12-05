@@ -7,7 +7,7 @@ class Board;
 
 class Piece {
 public:
-    enum Side {WHITE, BLACK };
+    enum Side {BLACK, WHITE };
 
     virtual ~Piece() {};
 

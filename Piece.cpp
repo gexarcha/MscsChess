@@ -193,7 +193,6 @@ bool Pawn::Attacks(int destination, Board &) const {
 }
 
 bool Pawn::CanMoveTo(int destination, Board& board) const {
-    cout << "Pawn::CanMoveTo" << endl;
     // cannot move to a square of same side
     if( board.IsSide(side, destination) ) return false;
     
