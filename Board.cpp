@@ -1,8 +1,10 @@
 #include "Board.h"
 #include "Piece.h"
 #include <vector>
+using std::vector;
 #include <string>
 #include <iostream>
+#include <algorithm>
 using std::cout;
 using std::endl;
 
@@ -138,41 +140,50 @@ void Board::Move(std::string move) {
     if( move.size() >= 4 ) {
        std::string fromString(move,0,2);
        std::string toString(move,2,2);
-       cout << "fromString: " << fromString << " toString: " << toString << endl;
 
        from = string2square(fromString);
        to = string2square(toString);
 
-       cout << "from: " << from << " to: " << to << endl;
-
        if (from == -1 || to == -1) throw std::string("Invalid command: ") + move;
     }
-    cout << "from: " << from << " to: " << to << endl;
     // now check whether the move is valid
     if( IsEmpty(from) ) throw std::string("Invalid Move: from square empty");
     if( !IsSide(sideToMove, from) ) throw std::string("Invalid Move: wrong color");
     if( !board[from]->CanMoveTo(to, *this) ) throw std::string("Invalid Move ");
 
-    // now we have a legal move
+    // now we have a legal move, do it
     Move(from, to);
-
-
 
 }
 
 void Board::Move(int from, int to) {
 
-    if( IsOccupied(to) ) {
-        delete board[to];
-        board[to] = 0;
+    Piece* fromP = board[from];
+    Piece* toP = board[to];
+    if( toP ) {
+        // remove the piece on the to square
+        // - remove it from piece list
+        vector<Piece*>& pieces = piece[toP->GetSide()];
+        vector<Piece*>::iterator found = std::find(pieces.begin(), pieces.end(), toP);
+        pieces.erase(found);
     }
-    board[from]->MoveTo(to);
-
-    board[to] = board[from];
+    fromP->MoveTo(to);
+    board[to] = fromP;
     board[from] = 0;
+    
+    if ( IsInCheck(fromP->GetSide()) ) {
+        // if we are in check: 
+        // - undo move
+        // - throw exeception
+        fromP->MoveTo(from);
+        board[from] = fromP;
+        board[to] = toP;
+        if(toP) piece[toP->GetSide()].push_back(toP);
+        throw std::string("Invalid Move: king is in check!");
+    }
+    delete toP;
     SwitchSide();
 }
-
 
 int Board::string2square(std::string square) {
    int column = square[0] - 'a';
@@ -188,5 +199,28 @@ void Board::SwitchSide() {
    else                             sideToMove = Piece::WHITE;
 }
 
+bool Board::IsInCheck(Piece::Side s) {
+    // find square of player king
+    // for all pieces of opposite side call 
+    // bool Piece::Attacks(int destination, Board&)
+    // return true if at least one piece attaks the player king
+    // int player = (s == Piece::BLACK) ? 0 : 1;
+    // int opposite = (s == Piece::BLACK) ? 1 : 0;
+    int player;
+    int opposite;
+    if (s == Piece::WHITE ) {
+       player = 1;
+       opposite = 0;
+    } else {
+       player = 0;
+       opposite = 1;
+    }
+    int kingSquare = piece[player][0]->GetSquare();
 
+    int nPieces = piece[opposite].size();
+    for(int i=0; i<nPieces; ++i) {
+        if( piece[opposite][i]->Attacks(kingSquare, *this) ) return true;
+    }
 
+    return false;
+}
