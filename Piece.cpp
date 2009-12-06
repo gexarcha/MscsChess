@@ -1,5 +1,7 @@
 #include "Piece.h"
 #include "Board.h"
+#include "Moves.h"
+#include "Move.h"
 
 #include <iostream>
 using namespace std;
@@ -29,6 +31,8 @@ int Piece::mailbox2board[64] = {
     81, 82, 83, 84, 85, 86, 77, 78,
     91, 92, 93, 94, 95, 96, 97, 98
 };
+
+Piece::~Piece() {}
 
 bool Piece::CrawlerAttacks(int destination) const {
     for(int i=0; i<nRay; ++i) {
@@ -63,6 +67,50 @@ bool Piece::SliderCanMoveTo(int destination, Board& board) const {
     return SliderAttacks(destination, board);
 }
 
+bool Piece::CrawlerGenerateMoves(Moves& moves, Board& board) const {
+    for(int i=0; i<nRay; ++i) {
+        int to = mailbox[ mailbox2board[square] + ray[i] ];
+        // outside: ignore
+        if(to == -1) continue;
+        // empty: create move
+        else if ( board.IsEmpty(to) ) moves.Insert(Move(square,to));
+        // own side: ignore
+        else if ( board.IsSide(side, to) ) continue;
+        // opposite king: position is invalid
+        else if ( board.IsKing(to) ) return false;
+        // capture: create Move
+        else moves.Insert(Move(square,to));
+    }
+    return true;
+}
+
+bool Piece::SliderGenerateMoves(Moves& moves, Board& board) const {
+    for(int i=0; i<nRay; ++i) {
+        for(int step=1; step<8; ++step) {
+            int to = mailbox[ mailbox2board[square] + ray[i]*step ];
+            if(to == -1) {
+                break;
+            }
+            if(board.IsEmpty(to)) {
+                moves.Insert(Move(square, to));
+                continue;
+            } else if(board.IsSide(side, to)) {
+                break;
+            }
+            else if(board.IsKing(to)) {
+                return false;
+            }
+            else {
+                moves.Insert(Move(square, to));
+                break; 
+            }
+        }
+    }
+    return true;
+}
+
+
+
 King::King(Side s, int square) : Piece(s, square) {
     shortName = (side == WHITE) ? 'K' : 'k';
     nRay = 8;
@@ -82,6 +130,10 @@ bool King::Attacks(int destination, Board&) const {
 
 bool King::CanMoveTo(int destination, Board& board) const { 
     return CrawlerCanMoveTo(destination, board); 
+}
+
+bool King::GenerateMoves(Moves& moves, Board& board) const {
+    return CrawlerGenerateMoves(moves, board);
 }
 
 
@@ -106,6 +158,11 @@ bool Queen::CanMoveTo(int destination, Board& board) const {
     return SliderCanMoveTo(destination, board); 
 }
 
+bool Queen::GenerateMoves(Moves& moves, Board& board) const {
+    return SliderGenerateMoves(moves, board);
+}
+
+
 Rock::Rock(Side s, int square) : Piece(s, square) {
     shortName = (side == WHITE) ? 'R' : 'r';
     nRay = 4;
@@ -123,6 +180,9 @@ bool Rock::CanMoveTo(int destination, Board& board) const {
     return SliderCanMoveTo(destination, board); 
 }
 
+bool Rock::GenerateMoves(Moves& moves, Board& board) const {
+    return SliderGenerateMoves(moves, board);
+}
 
 Bishop::Bishop(Side s, int square) : Piece(s, square) {
     shortName = (side == WHITE) ? 'B' : 'b';
@@ -141,6 +201,9 @@ bool Bishop::CanMoveTo(int destination, Board& board) const {
     return SliderCanMoveTo(destination, board); 
 }
 
+bool Bishop::GenerateMoves(Moves& moves, Board& board) const {
+    return SliderGenerateMoves(moves, board);
+}
 
 Knight::Knight(Side s, int square) : Piece(s, square) {
     shortName = (side == WHITE) ? 'N' : 'n';
@@ -161,6 +224,10 @@ bool Knight::Attacks(int destination, Board& ) const {
 
 bool Knight::CanMoveTo(int destination, Board& board) const { 
     return CrawlerCanMoveTo(destination, board); 
+}
+
+bool Knight::GenerateMoves(Moves& moves, Board& board) const {
+    return CrawlerGenerateMoves(moves, board);
 }
 
 Pawn::Pawn(Side s, int square) : Piece(s, square) {
@@ -211,3 +278,44 @@ bool Pawn::CanMoveTo(int destination, Board& board) const {
  
     return false;
 }
+
+bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
+    //cout << " Pawn::GenerateMoves " << endl;
+    //capture 
+    int to;
+    //cout << " Pawn::GenerateMoves capture" << endl;
+    for(int i=1; i<3; ++i) {
+        //cout << " Pawn::GenerateMoves capture i:" << i << endl;
+        to = mailbox[ mailbox2board[square] + ray[i] ];
+        if (to == -1) continue;
+        //cout << " Pawn::GenerateMoves capture to:" << to << endl;
+        if(board.IsOccupied(to)) {
+            if(!board.IsSide(side,to) ) {
+                if(board.IsKing(to)) return false;
+            }
+        }
+    }
+
+    //advance one step   
+    //cout << " Pawn::GenerateMoves one step" << endl;
+
+    to = mailbox[ mailbox2board[square] + ray[0] ];
+    if( board.IsEmpty(to) ) {
+        moves.Insert(Move(square, to));
+
+        if( nRay == 1 ) {
+            // advance on more step
+            to = mailbox[ mailbox2board[to] + ray[0] ];
+            if( board.IsEmpty(to) ) moves.Insert(Move(square, to));
+        }
+    }
+
+    return true;
+}
+
+/*
+bool Piece::GenerateMoves(Moves& m) const {
+    return true;
+}
+*/
+

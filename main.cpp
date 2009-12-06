@@ -48,8 +48,13 @@ int main() {
             continue;
         }
 
+        if(command == "random") {
+            board.RandomMove();
+            continue;
+        }
+
         try {
-            board.Move(command);
+            board.DoMove(command);
         } catch (string& msg) {
             cout << msg << endl;
         }
