@@ -56,7 +56,7 @@ private:
     bool DoMove(int from, int to);
     bool TryMove(Move& move);
     void SwitchSide();
-    bool GenerateMoves(Moves& moves);
+    bool GeneratePseudoLegalMoves(Moves& moves);
 
     static int string2square(std::string square);
 };

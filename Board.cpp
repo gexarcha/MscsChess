@@ -160,7 +160,7 @@ void Board::DoMove(std::string move) {
 
        // check whether we are checkmate
        Moves moves;
-       GenerateMoves(moves); 
+       GeneratePseudoLegalMoves(moves); 
        int n = moves.Size();
        bool mate = true;
        for(int i=0; i<n; ++i) {
@@ -270,7 +270,7 @@ bool Board::IsInCheck(Piece::Side s) {
     return false;
 }
 
-bool Board::GenerateMoves(Moves& moves) {
+bool Board::GeneratePseudoLegalMoves(Moves& moves) {
 
     vector<Piece*>& pieces = piece[sideToMove];
     int nPieces = pieces.size();
@@ -283,7 +283,7 @@ bool Board::GenerateMoves(Moves& moves) {
 
 void Board::RandomMove() {
     Moves moves;
-    GenerateMoves(moves);
+    GeneratePseudoLegalMoves(moves);
     bool done = false;
     while(!done) {
         int i = rand() % moves.Size();      
@@ -297,7 +297,7 @@ void Board::RandomMove() {
 
        // check whether we are checkmate
        Moves moves;
-       GenerateMoves(moves); 
+       GeneratePseudoLegalMoves(moves); 
        int n = moves.Size();
        bool mate = true;
        for(int i=0; i<n; ++i) {
