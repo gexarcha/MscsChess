@@ -287,7 +287,7 @@ void Board::RandomMove() {
     bool done = false;
     while(!done) {
         int i = rand() % moves.Size();      
-        cout << "RandomMove: i = " << i << " out of " << moves.Size() << endl;
+        // cout << "RandomMove: i = " << i << " out of " << moves.Size() << endl;
         Move m = moves[i];
         if( DoMove(m.From(), m.To()) ) done=true;
     }

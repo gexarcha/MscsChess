@@ -3,7 +3,14 @@
 
 This is the example project of the winter 2009/2010 Software Design and Construction class.
 
-\todo Test ToDo
+\todo fix init() which does not clear the board
+
+\todo introduce castling
+
+\todo introduce pawn promotion
+
+\todo implement a Do/UndoMove facility
+
 */
 
 #include "Board.h"
