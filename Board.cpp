@@ -8,7 +8,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-Board::Board() : board(64,(Piece*)0) {srand(0);}
+Board::Board() : board(64,(Piece*)0) {}
 
 void Board::Init(std::string fenPosition) {
     int iFen = 0;

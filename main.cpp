@@ -18,6 +18,8 @@ This is the example project of the winter 2009/2010 Software Design and Construc
 
 #include <iostream>
 #include <string>
+#include <ctime>
+#include <cstdlib>
 using namespace std;
 
 void printBanner();
@@ -26,6 +28,8 @@ string prompt();
 void test();
 
 int main() {
+    // initialize random number generator
+    srand(time(0));
 
     Board board;
     printBanner();
