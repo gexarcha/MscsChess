@@ -152,7 +152,7 @@ void Board::DoMove(std::string move) {
     if( !board[from]->CanMoveTo(to, *this) ) throw std::string("Invalid Move ");
 
     // now we have a legal move, do it
-    if(!DoMove(from, to)) throw std::string("Invalid: you are in check");
+    if( !DoMove( Move(from, to) ) ) throw std::string("Invalid: you are in check");
 
     // are we in check?
     if( IsInCheck(sideToMove) ) {
@@ -174,60 +174,64 @@ void Board::DoMove(std::string move) {
     }
 }
 
-bool Board::DoMove(int from, int to) {
 
-    Piece* fromP = board[from];
-    Piece* toP = board[to];
-    if( toP ) {
-        // remove the piece on the to square
-        // - remove it from piece list
-        vector<Piece*>& pieces = piece[toP->GetSide()];
-        vector<Piece*>::iterator found = std::find(pieces.begin(), pieces.end(), toP);
-        pieces.erase(found);
-    }
-    fromP->MoveTo(to);
-    board[to] = fromP;
-    board[from] = 0;
-    
-    if ( IsInCheck(fromP->GetSide()) ) {
-        // if we are in check: 
-        // - undo move
-        // - throw exeception
-        fromP->MoveTo(from);
-        board[from] = fromP;
-        board[to] = toP;
-        if(toP) piece[toP->GetSide()].push_back(toP);
-        return false;
-    }
-    delete toP;
-    SwitchSide();
-    return true;
-
-}
-
-bool Board::TryMove(Move& move) {
+void Board::ApplyMove(Move move) {
     int from = move.From();
     int to = move.To();
     Piece* fromP = board[from];
     Piece* toP = board[to];
     if( toP ) {
-        // remove the piece on the to square
-        // - remove it from piece list
-        vector<Piece*>& pieces = piece[toP->GetSide()];
-        vector<Piece*>::iterator found = std::find(pieces.begin(), pieces.end(), toP);
-        pieces.erase(found);
+     	 move.SetCapturedPiece(toP);
+         // remove the piece on the to square
+         // - remove it from piece list
+         vector<Piece*>& pieces = piece[toP->GetSide()];
+         vector<Piece*>::iterator found = std::find(pieces.begin(), pieces.end(), toP);
+         pieces.erase(found);
     }
     fromP->MoveTo(to);
     board[to] = fromP;
     board[from] = 0;
+    moveStack.push_back(move);
+    SwitchSide();
+}
+
+bool Board::DoMove(Move move) {
+
+    ApplyMove(move);
     
-    bool check = IsInCheck(fromP->GetSide());
-    fromP->MoveTo(from);
-    board[from] = fromP;
-    board[to] = toP;
-    if(toP) piece[toP->GetSide()].push_back(toP);
-       
+    if ( IsInCheck(SideToWait()) ) {
+        UndoMove();
+        return false;
+    }
+
+    return true;
+
+}
+
+bool Board::TryMove(Move& move) {
+
+	ApplyMove(move);
+    
+    bool check = IsInCheck(SideToWait());
+
+    UndoMove();
+
     return !check;
+}
+
+void Board::UndoMove() {
+    if(moveStack.size() == 0) return;
+
+    Move move = moveStack.back();
+    moveStack.pop_back();
+
+	board[move.From()] = board[move.To()];
+	board[move.From()]->MoveTo(move.From());
+	Piece* captured = move.GetCapturedPiece();
+	board[move.To()] = captured;
+	if(captured) piece[captured->GetSide()].push_back(captured);
+
+	SwitchSide();
 }
 
 int Board::string2square(std::string square) {
@@ -289,7 +293,7 @@ void Board::RandomMove() {
         int i = rand() % moves.Size();      
         // cout << "RandomMove: i = " << i << " out of " << moves.Size() << endl;
         Move m = moves[i];
-        if( DoMove(m.From(), m.To()) ) done=true;
+        if( DoMove(m) ) done=true;
     }
 
     if( IsInCheck(sideToMove) ) {
@@ -309,5 +313,4 @@ void Board::RandomMove() {
        if(mate) cout << "mate";
        cout << endl;
     }
-    
 }

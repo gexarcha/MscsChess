@@ -79,7 +79,7 @@ bool Piece::CrawlerGenerateMoves(Moves& moves, Board& board) const {
         // opposite king: position is invalid
         else if ( board.IsKing(to) ) return false;
         // capture: create Move
-        else moves.Insert(Move(square,to));
+        else moves.Insert(Move(square, to));
     }
     return true;
 }

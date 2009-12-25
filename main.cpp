@@ -13,6 +13,8 @@ This is the example project of the winter 2009/2010 Software Design and Construc
 
 */
 
+
+
 #include "Board.h"
 #include "Piece.h"
 
@@ -80,6 +82,8 @@ void printBanner() {
     cout << "   'test' to run the unit tests\n";
     cout << "   'init' to initialize the board\n";
     cout << "   'show' to show the board\n";
+    cout << "   'random' for a random computer move\n";
+    cout << "   'cndm' with c,d = [a,h], n,m = [1,8] for a move\n";
 }
 
 string prompt() {
