@@ -1,8 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "Piece.h"
 #include "Move.h"
+#include "Piece.h"
 #include "Moves.h"
 
 #include <vector>
@@ -43,8 +43,14 @@ public:
 
     void Show();
     void DoMove(std::string move);
+    bool DoMove(Move move);
+    void UndoMove();
     void RandomMove();
     bool IsInCheck(Piece::Side s);
+
+    int GetMaterialScore() const;
+
+    bool GeneratePseudoLegalMoves(Moves& moves);
 
     Piece::Side SideToMove() const { return sideToMove; }
 
@@ -52,6 +58,8 @@ public:
        if (sideToMove == Piece::WHITE ) return Piece::BLACK;
        else                             return Piece::WHITE;
     }
+
+
 private:
     /**
     piece[0] are the black pieces, piece[1] are the white pieces, the kings are in the first element p[i][0].
@@ -61,15 +69,16 @@ private:
     std::vector<Move> moveStack;
     Piece::Side sideToMove;
 
-    bool DoMove(int from, int to);
-    bool DoMove(Move move);
     void ApplyMove(Move move);
-    void UndoMove();
+
     bool TryMove(Move& move);
     void SwitchSide();
-    bool GeneratePseudoLegalMoves(Moves& moves);
+
 
     static int string2square(std::string square);
+
 };
+
+std::string square2string(int square);
 
 #endif

@@ -9,8 +9,6 @@ This is the example project of the winter 2009/2010 Software Design and Construc
 
 \todo introduce pawn promotion
 
-\todo implement a Do/UndoMove facility
-
 */
 
 

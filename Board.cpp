@@ -293,11 +293,14 @@ void Board::RandomMove() {
         int i = rand() % moves.Size();      
         // cout << "RandomMove: i = " << i << " out of " << moves.Size() << endl;
         Move m = moves[i];
-        if( DoMove(m) ) done=true;
+        if( DoMove(m) ) {
+        	done=true;
+        	cout << m;
+        }
     }
 
     if( IsInCheck(sideToMove) ) {
-        cout << "check";
+        cout << " check";
 
        // check whether we are checkmate
        Moves moves;
@@ -311,6 +314,47 @@ void Board::RandomMove() {
            }
        }
        if(mate) cout << "mate";
-       cout << endl;
     }
+    cout << endl;
 }
+
+int Board::GetMaterialScore() const {
+	int score = 0;
+    int nPieces = piece[Piece::WHITE].size();
+    for(int i=1; i<nPieces; ++i) {
+        score += piece[Piece::WHITE][i]->GetScore();
+    }
+    nPieces = piece[Piece::BLACK].size();
+    for(int i=1; i<nPieces; ++i) {
+         score += piece[Piece::BLACK][i]->GetScore();
+     }
+
+
+}
+
+std::string square2string(int square) {
+   int line = square/8;
+   std::string result;
+   switch(square%8) {
+       case 0: result += 'a'; break;
+       case 1: result += 'b'; break;
+       case 2: result += 'c'; break;
+       case 3: result += 'd'; break;
+       case 4: result += 'e'; break;
+       case 5: result += 'f'; break;
+       case 6: result += 'g'; break;
+       case 7: result += 'h'; break;
+   }
+   switch(square/8) {
+        case 0: result += '8'; break;
+        case 1: result += '7'; break;
+        case 2: result += '6'; break;
+        case 3: result += '5'; break;
+        case 4: result += '4'; break;
+        case 5: result += '3'; break;
+        case 6: result += '2'; break;
+        case 7: result += '1'; break;
+    }
+   return result;
+}
+

@@ -1,6 +1,9 @@
 #ifndef MOVE_H
 #define MOVE_H
 
+#include <iostream>
+#include <string>
+
 class Piece;
 
 class Move {
@@ -16,6 +19,8 @@ private:
     Piece* captured;
     
 };
+
+std::ostream& operator<<(std::ostream& o, const Move& m);
 
 #endif
 

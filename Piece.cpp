@@ -112,7 +112,13 @@ bool Piece::SliderGenerateMoves(Moves& moves, Board& board) const {
 
 
 King::King(Side s, int square) : Piece(s, square) {
-    shortName = (side == WHITE) ? 'K' : 'k';
+    if(side == WHITE){
+    	shortName = 'K';
+    	score = KING;
+    } else {
+    	shortName = 'k';
+    	score = -KING;
+    }
     nRay = 8;
     ray[0] = -11;
     ray[1] = -10;
@@ -138,7 +144,13 @@ bool King::GenerateMoves(Moves& moves, Board& board) const {
 
 
 Queen::Queen(Side s, int square) : Piece(s, square) {
-    shortName = (side == WHITE) ? 'Q' : 'q';
+    if(side == WHITE){
+    	shortName = 'Q';
+    	score = QUEEN;
+    } else {
+    	shortName = 'q';
+    	score = -QUEEN;
+    }
     nRay = 8;
     ray[0] = -11;
     ray[1] = -10;
@@ -164,7 +176,13 @@ bool Queen::GenerateMoves(Moves& moves, Board& board) const {
 
 
 Rock::Rock(Side s, int square) : Piece(s, square) {
-    shortName = (side == WHITE) ? 'R' : 'r';
+    if(side == WHITE){
+     	shortName = 'R';
+     	score = ROCK;
+     } else {
+     	shortName = 'r';
+     	score = -ROCK;
+     }
     nRay = 4;
     ray[0] = -10;
     ray[1] = -1;
@@ -185,7 +203,13 @@ bool Rock::GenerateMoves(Moves& moves, Board& board) const {
 }
 
 Bishop::Bishop(Side s, int square) : Piece(s, square) {
-    shortName = (side == WHITE) ? 'B' : 'b';
+    if(side == WHITE){
+     	shortName = 'B';
+     	score = BISHOP;
+     } else {
+     	shortName = 'b';
+     	score = -BISHOP;
+     }
     nRay = 4;
     ray[0] = -11;
     ray[1] = -9;
@@ -206,7 +230,13 @@ bool Bishop::GenerateMoves(Moves& moves, Board& board) const {
 }
 
 Knight::Knight(Side s, int square) : Piece(s, square) {
-    shortName = (side == WHITE) ? 'N' : 'n';
+    if(side == WHITE){
+     	shortName = 'N';
+     	score = KNIGHT;
+     } else {
+     	shortName = 'n';
+     	score = -KNIGHT;
+     }
     nRay = 8;
     ray[0] = -21;
     ray[1] = -19;
@@ -233,6 +263,7 @@ bool Knight::GenerateMoves(Moves& moves, Board& board) const {
 Pawn::Pawn(Side s, int square) : Piece(s, square) {
     if(side == WHITE) {
         shortName = 'P';
+        score = PAWN;
         ray[0] = -10;
         ray[1] = -11;
         ray[2] = -9;
@@ -242,6 +273,7 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
         else                           nRay = 0;
     } else {
         shortName = 'p';
+        score = - PAWN;
         ray[0] = 10;
         ray[1] = 11;
         ray[2] = 9;
@@ -312,10 +344,4 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
 
     return true;
 }
-
-/*
-bool Piece::GenerateMoves(Moves& m) const {
-    return true;
-}
-*/
 

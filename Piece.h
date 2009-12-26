@@ -9,6 +9,7 @@ class Moves;
 class Piece {
 public:
     enum Side {BLACK, WHITE };
+    enum Score {PAWN = 100, KNIGHT = 300, BISHOP = 325, ROCK = 500, QUEEN = 900, KING = 10000};
 
     virtual ~Piece();
 
@@ -24,6 +25,7 @@ public:
     void MoveTo(int to) { square = to; if(nRay==1) nRay=0;};
     virtual bool GenerateMoves(Moves& moves, Board& board) const = 0;
     int GetSquare() const  { return square; }
+    int GetScore() const { return score; }
 
 protected:
     Piece(Side s, int square) : side(s), square(square) {};
@@ -39,6 +41,7 @@ protected:
 
     Side side;
     int square;
+    int score;
     int nRay;
     int ray[8];
     char shortName;
