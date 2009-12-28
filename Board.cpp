@@ -181,12 +181,15 @@ void Board::ApplyMove(Move move) {
     Piece* fromP = board[from];
     Piece* toP = board[to];
     if( toP ) {
+    	 //std::cout << " ApplyMove: capture: " << move << std::endl;
+    	 //PrintPieces();
      	 move.SetCapturedPiece(toP);
          // remove the piece on the to square
          // - remove it from piece list
          vector<Piece*>& pieces = piece[toP->GetSide()];
          vector<Piece*>::iterator found = std::find(pieces.begin(), pieces.end(), toP);
          pieces.erase(found);
+         //PrintPieces();
     }
     fromP->MoveTo(to);
     board[to] = fromP;
@@ -197,9 +200,12 @@ void Board::ApplyMove(Move move) {
 
 bool Board::DoMove(Move move) {
 
+	//std::cerr << " in do move " << move << " ";
+
     ApplyMove(move);
     
     if ( IsInCheck(SideToWait()) ) {
+    	//std::cerr << " in check ";
         UndoMove();
         return false;
     }
@@ -210,6 +216,7 @@ bool Board::DoMove(Move move) {
 
 bool Board::TryMove(Move& move) {
 
+    //std::cerr << " try move " << move << " ";
 	ApplyMove(move);
     
     bool check = IsInCheck(SideToWait());
@@ -220,18 +227,23 @@ bool Board::TryMove(Move& move) {
 }
 
 void Board::UndoMove() {
+	//std::cerr << " undo stack: " << moveStack.size();
     if(moveStack.size() == 0) return;
 
     Move move = moveStack.back();
+    //std::cerr << " undo " << move;
     moveStack.pop_back();
 
 	board[move.From()] = board[move.To()];
 	board[move.From()]->MoveTo(move.From());
 	Piece* captured = move.GetCapturedPiece();
 	board[move.To()] = captured;
+	//std::cerr << " " << captured;
 	if(captured) piece[captured->GetSide()].push_back(captured);
 
 	SwitchSide();
+
+	//std::cerr << std::endl;
 }
 
 int Board::string2square(std::string square) {
@@ -329,7 +341,7 @@ int Board::GetMaterialScore() const {
          score += piece[Piece::BLACK][i]->GetScore();
      }
 
-
+    return score;
 }
 
 std::string square2string(int square) {
@@ -356,5 +368,19 @@ std::string square2string(int square) {
         case 7: result += '1'; break;
     }
    return result;
+}
+
+#include "SearchAgent.h"
+
+void Board::SearchMove() {
+	SearchAgent agent(*this);
+	Move move = agent.GetBestMove();
+}
+
+void Board::PrintPieces() {
+	for(int i=0; i<piece[0].size(); ++i) piece[0][i]->Print();
+	std::cout << std::endl;
+	for(int i=0; i<piece[1].size(); ++i) piece[1][i]->Print();
+	std::cout << std::endl;
 }
 

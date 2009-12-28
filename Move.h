@@ -8,7 +8,7 @@ class Piece;
 
 class Move {
 public:
-    Move(int from, int to, Piece* capt=0) : from(from), to(to), captured(capt) {}
+    Move(int from = -1 , int to = -1, Piece* capt=0) : from(from), to(to), captured(capt) {}
     int From() const { return from; }
     int To() const { return to; }
     void SetCapturedPiece(Piece* piece) { captured = piece; }

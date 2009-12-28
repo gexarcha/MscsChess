@@ -46,6 +46,7 @@ public:
     bool DoMove(Move move);
     void UndoMove();
     void RandomMove();
+    void SearchMove();
     bool IsInCheck(Piece::Side s);
 
     int GetMaterialScore() const;
@@ -58,7 +59,7 @@ public:
        if (sideToMove == Piece::WHITE ) return Piece::BLACK;
        else                             return Piece::WHITE;
     }
-
+    void ApplyMove(Move move);
 
 private:
     /**
@@ -69,7 +70,8 @@ private:
     std::vector<Move> moveStack;
     Piece::Side sideToMove;
 
-    void ApplyMove(Move move);
+
+    void PrintPieces();
 
     bool TryMove(Move& move);
     void SwitchSide();

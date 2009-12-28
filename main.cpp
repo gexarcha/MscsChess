@@ -63,7 +63,10 @@ int main() {
             board.RandomMove();
             continue;
         }
-
+        if(command == "search") {
+            board.SearchMove();
+            continue;
+        }
         try {
             board.DoMove(command);
         } catch (string& msg) {
@@ -81,6 +84,7 @@ void printBanner() {
     cout << "   'init' to initialize the board\n";
     cout << "   'show' to show the board\n";
     cout << "   'random' for a random computer move\n";
+    cout << "   'search' propose a computer move\n";
     cout << "   'cndm' with c,d = [a,h], n,m = [1,8] for a move\n";
 }
 

@@ -1,5 +1,7 @@
 #include "Evaluator.h"
 
 int Evaluator::Score() {
-	return board.GetMaterialScore();
+	checkedPositions++;
+	if(board.SideToMove()==Piece::WHITE) return -board.GetMaterialScore();
+	else                                 return  board.GetMaterialScore();
 }

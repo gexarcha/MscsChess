@@ -28,7 +28,7 @@ int Piece::mailbox2board[64] = {
     51, 52, 53, 54, 55, 56, 57, 58,
     61, 62, 63, 64, 65, 66, 67, 68,
     71, 72, 73, 74, 75, 76, 77, 78,
-    81, 82, 83, 84, 85, 86, 77, 78,
+    81, 82, 83, 84, 85, 86, 87, 88,
     91, 92, 93, 94, 95, 96, 97, 98
 };
 
@@ -324,6 +324,7 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
         if(board.IsOccupied(to)) {
             if(!board.IsSide(side,to) ) {
                 if(board.IsKing(to)) return false;
+                else moves.Insert(Move(square,to));
             }
         }
     }
