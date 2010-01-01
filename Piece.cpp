@@ -79,7 +79,7 @@ bool Piece::CrawlerGenerateMoves(Moves& moves, Board& board) const {
         // opposite king: position is invalid
         else if ( board.IsKing(to) ) return false;
         // capture: create Move
-        else moves.Insert(Move(square, to));
+        else moves.Insert(Move(square, to, Move::CAPTURE));
     }
     return true;
 }
@@ -101,7 +101,7 @@ bool Piece::SliderGenerateMoves(Moves& moves, Board& board) const {
                 return false;
             }
             else {
-                moves.Insert(Move(square, to));
+                moves.Insert(Move(square, to, Move::CAPTURE));
                 break; 
             }
         }
@@ -324,7 +324,7 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
         if(board.IsOccupied(to)) {
             if(!board.IsSide(side,to) ) {
                 if(board.IsKing(to)) return false;
-                else moves.Insert(Move(square,to));
+                else moves.Insert(Move(square,to, Move::CAPTURE));
             }
         }
     }

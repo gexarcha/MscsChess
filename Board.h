@@ -52,6 +52,7 @@ public:
     int GetMaterialScore() const;
 
     bool GeneratePseudoLegalMoves(Moves& moves);
+    bool GenerateCaptureMoves(Moves& moves);
 
     Piece::Side SideToMove() const { return sideToMove; }
 
@@ -69,6 +70,8 @@ private:
     std::vector<Piece*> board;
     std::vector<Move> moveStack;
     Piece::Side sideToMove;
+
+    int ply;
 
 
     void PrintPieces();

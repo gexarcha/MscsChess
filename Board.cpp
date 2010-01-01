@@ -11,6 +11,7 @@ using std::endl;
 Board::Board() : board(64,(Piece*)0) {}
 
 void Board::Init(std::string fenPosition) {
+	ply = 0;
     int iFen = 0;
     int iWhite = 0;
     int iBlack = 0;
@@ -176,6 +177,7 @@ void Board::DoMove(std::string move) {
 
 
 void Board::ApplyMove(Move move) {
+	ply++;
     int from = move.From();
     int to = move.To();
     Piece* fromP = board[from];
@@ -229,7 +231,7 @@ bool Board::TryMove(Move& move) {
 void Board::UndoMove() {
 	//std::cerr << " undo stack: " << moveStack.size();
     if(moveStack.size() == 0) return;
-
+    ply--;
     Move move = moveStack.back();
     //std::cerr << " undo " << move;
     moveStack.pop_back();
@@ -295,6 +297,14 @@ bool Board::GeneratePseudoLegalMoves(Moves& moves) {
     }
 
     return true;
+}
+
+bool Board::GenerateCaptureMoves(Moves & captures) {
+	Moves moves;
+    if(!GeneratePseudoLegalMoves(moves)) return false;
+    int nMoves = moves.Size();
+    for(int i=0; i<nMoves; ++i) if (moves[i].IsCapture()) captures.Insert(moves[i]);
+    return  true;
 }
 
 void Board::RandomMove() {
