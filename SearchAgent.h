@@ -23,7 +23,6 @@ private:
 	static const int ILLEGAL = 30000;
 
 	int AlphaBeta(int depth, int alpha, int beta);
-	int QuiescenceSearch(int alpha, int beta);
 };
 
 #endif /* SEARCHAGENT_H */

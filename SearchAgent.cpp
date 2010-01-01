@@ -45,8 +45,6 @@ Move SearchAgent::GetBestMove() {
 	clock_t start, end;
 	double cpuTime;
 
-
-
 	int bestScoreSoFar = MIN_SCORE;
 	int alpha = MIN_SCORE;
 	int beta = MAX_SCORE;
@@ -61,7 +59,7 @@ Move SearchAgent::GetBestMove() {
     	start = std::clock();
     	board.ApplyMove(moves[i]);
 
-    	int score =  -AlphaBeta(3,-beta, -alpha);
+    	int score =  -AlphaBeta(2,-beta, -alpha);
     	int nPos = evaluator.GetCheckedPositions();
     	evaluator.Reset();
     	int nNodes = checkedNodes;
