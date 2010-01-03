@@ -13,7 +13,7 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
     int nMoves = moves.Size();
     for(int i = 0; i<nMoves; ++i) {
     	//std::cout << " in AlphaBeta check: " << moves[i] << " depth = " << depth<< std::endl;
-        board.ApplyMove(moves[i]);
+        board.ApplyMove(moves[i]); ply++;
 
         if(depth == 0) {
         	if(moves[i].IsCapture()) score = -AlphaBeta(depth, -beta, -alpha);
@@ -21,12 +21,15 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
         }
         else score = - AlphaBeta(depth-1, -beta, -alpha);
 
-        board.UndoMove();
+        board.UndoMove(); ply--;
 
         if(score == ILLEGAL) continue;
 
         if(score > bestScore) bestScore = score;
-        if(bestScore > alpha) alpha = bestScore;
+        if(bestScore > alpha) {
+        	alpha = bestScore;
+        	bestMoves[ply] = moves[i];
+        }
         if(alpha >= beta) return alpha;
     }
     if (bestScore == MIN_SCORE) {
@@ -39,8 +42,15 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
     return bestScore;
 }
 
+Move SearchAgent::GetBestMove() {
+	int score = AlphaBeta(2,MIN_SCORE, MAX_SCORE);
+	std::cout << "score = " << score << std::endl;
+	for(int i=0; i<MAX_PLY; ++i) std::cout << bestMoves[i] << ", ";
+    std::cout << std::endl;
+	return bestMoves[0];
+}
 
-
+/*
 Move SearchAgent::GetBestMove() {
 	clock_t start, end;
 	double cpuTime;
@@ -78,8 +88,11 @@ Move SearchAgent::GetBestMove() {
     	std::cout << "checked positions: " << nPos << " in " << cpuTime << " s, or " <<nPos/cpuTime << " positions/s\n";
     	std::cout << "checked nodes: " << nNodes << " in " << cpuTime << " s, or " <<nNodes/cpuTime << " nodes/s\n";
     	std::cout << "score: " << score << " best score = " << bestScoreSoFar << "\n best move so far: " << bestMoveSoFar << std::endl;
+    	for(int i=0; i<MAX_PLY; ++i) std::cout << bestMoves[i] << ", ";
+    	std::cout << std::endl;
     	if (bestScoreSoFar > alpha) alpha = bestScoreSoFar;
 
     }
     return bestMoveSoFar;
 }
+*/
