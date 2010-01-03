@@ -32,7 +32,7 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
     if (bestScore == MIN_SCORE) {
     	// no legal move
 
-    	if(board.IsInCheck(board.SideToMove())) return bestScore - depth;
+    	if(board.IsInCheck(board.SideToMove())) return MATE_SCORE - depth;
     	else return 0;
 
     }
