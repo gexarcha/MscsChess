@@ -27,10 +27,11 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
 
         if(score > bestScore) bestScore = score;
         if(bestScore > alpha) {
+         	if(bestScore >= beta) return bestScore;
         	alpha = bestScore;
         	bestMoves[ply] = moves[i];
         }
-        if(alpha >= beta) return alpha;
+        //if(alpha >= beta) return alpha;
     }
     if (bestScore == MIN_SCORE) {
     	// no legal move
@@ -43,7 +44,7 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
 }
 
 Move SearchAgent::GetBestMove() {
-	int score = AlphaBeta(2,MIN_SCORE, MAX_SCORE);
+	int score = AlphaBeta(3,MIN_SCORE, MAX_SCORE);
 	std::cout << "score = " << score << std::endl;
 	for(int i=0; i<MAX_PLY; ++i) std::cout << bestMoves[i] << ", ";
     std::cout << std::endl;

@@ -19,7 +19,7 @@ private:
 	int checkedNodes;
 	int ply;
 
-	static const int MAX_PLY = 20;
+	static const int MAX_PLY = 50;
 	static const int MIN_SCORE = -30000;
 	static const int MATE_SCORE = -10000;
 	static const int MAX_SCORE = +30000;
