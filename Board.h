@@ -44,6 +44,7 @@ public:
     void Show();
     void DoMove(std::string move);
     void RandomMove();
+    std::string XRandomMove();
     bool IsInCheck(Piece::Side s);
 private:
     /**
