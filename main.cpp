@@ -16,6 +16,7 @@ This is the example project of the winter 2009/2010 Software Design and Construc
 #include "Board.h"
 #include "Piece.h"
 
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -27,7 +28,9 @@ string prompt();
 
 void test();
 
-int main() {
+void xboard(Board& board);
+
+int main(int argc, char* argv[]) {
     // initialize random number generator
     srand(time(0));
 
@@ -63,10 +66,17 @@ int main() {
             board.RandomMove();
             continue;
         }
+
         if(command == "search") {
             board.SearchMove();
             continue;
         }
+
+        if(command == "xboard") {
+            xboard(board);
+            break;
+        }
+
         try {
             board.DoMove(command);
         } catch (string& msg) {
@@ -291,4 +301,37 @@ void test() {
     cout << " no of tests: " << ok + failed << endl;
     cout << ok << " passed, " << failed << " failed.\n"; 
 
+}
+
+void xboard(Board& board) {
+    string command; 
+    ofstream logfile("logfile.txt");
+    cout << "feature myname=\"MscsCess.v0\"" << endl;
+    cout << "feature time=0" << endl;
+    cout << "feature usermove=1" << endl;
+    cout << "feature sigint=0" << endl;
+    cout << "feature sigterm=0" << endl;
+    cout << "feature done=1" << endl;
+    board.Init();
+    while(true) {
+         // send data to xboard
+         cout.flush();
+         getline(cin, command);
+         logfile << command << endl;
+         if(command == "quit") break;
+
+         if(command.size() > 12 ) {
+             logfile << "parsing usermove: " << endl;
+             if(command.find("usermove") == 0) {
+                 command.erase(0,9);
+                 logfile << command << endl;
+                 board.DoMove(command);
+
+                 string move = board.XRandomMove();
+                 cout << "move " << move << endl;
+                 logfile << "my move " << move << endl;
+             }
+         }
+
+    }
 }

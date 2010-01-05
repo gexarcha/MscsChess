@@ -394,3 +394,27 @@ void Board::PrintPieces() {
 	std::cout << std::endl;
 }
 
+std::string Board::XRandomMove() {
+    Moves moves;
+    GeneratePseudoLegalMoves(moves);
+    bool done = false;
+    Move m(-1,-1);
+    while(!done) {
+        int i = rand() % moves.Size();      
+        // cout << "RandomMove: i = " << i << " out of " << moves.Size() << endl;
+        m = moves[i];
+        if( DoMove(m) ) done=true;
+    }
+
+    std::string result;
+    char lines[] = "87654321";
+    char columns[] = "abcdefgh"; 
+
+    result += columns[m.From()%8];
+    result += lines[m.From()/8];
+    result += columns[m.To()%8];
+    result += lines[m.To()/8];
+    
+    return result;
+}
+
