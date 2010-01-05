@@ -46,8 +46,8 @@ public:
     bool DoMove(Move move);
     void UndoMove();
     void RandomMove();
-    void SearchMove();
     std::string XRandomMove();
+    Move SearchMove();
     bool IsInCheck(Piece::Side s);
 
     int GetMaterialScore() const;

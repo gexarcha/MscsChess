@@ -15,6 +15,7 @@ This is the example project of the winter 2009/2010 Software Design and Construc
 
 #include "Board.h"
 #include "Piece.h"
+#include "Move.h"
 
 #include <fstream>
 #include <iostream>
@@ -67,14 +68,19 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        if(command == "search") {
-            board.SearchMove();
-            continue;
-        }
-
         if(command == "xboard") {
             xboard(board);
             break;
+        }
+
+        if(command == "hint") {
+            board.SearchMove();
+            continue;
+        }
+        if(command == "move") {
+             board.ApplyMove(board.SearchMove());
+             board.Show();
+             continue;
         }
 
         try {
@@ -93,8 +99,9 @@ void printBanner() {
     cout << "   'test' to run the unit tests\n";
     cout << "   'init' to initialize the board\n";
     cout << "   'show' to show the board\n";
-    cout << "   'random' for a random computer move\n";
-    cout << "   'search' propose a computer move\n";
+    cout << "   'rand' do a random computer move\n";
+    cout << "   'hint' propose a computer move\n";
+    cout << "   'move' do a computer move\n";
     cout << "   'cndm' with c,d = [a,h], n,m = [1,8] for a move\n";
 }
 

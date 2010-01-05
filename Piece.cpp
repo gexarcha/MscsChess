@@ -264,23 +264,23 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
     if(side == WHITE) {
         shortName = 'P';
         score = PAWN;
-        ray[0] = -10;
-        ray[1] = -11;
-        ray[2] = -9;
-
-        // misuse of nRay to signal pawn on starting position
-        if(47 < square && square < 56) nRay = 1;
-        else                           nRay = 0;
+        ray[0] = -10; // advance one step
+        ray[1] = -11; // capture right
+        ray[2] = -9;  // capture left
+        // misuse as marker
+        ray[4] = 6;   // start row
+        ray[5] = 3;   //
+        ray[7] = 0;   // promotion row
     } else {
         shortName = 'p';
         score = - PAWN;
-        ray[0] = 10;
-        ray[1] = 11;
-        ray[2] = 9;
- 
-        // misuse of nRay to signal pawn on starting position
-        if(7 < square && square < 16) nRay = 1;
-        else                           nRay = 0;
+        ray[0] = 10; // advance one step
+        ray[1] = 11; // capture right
+        ray[2] = 9;  // capture left
+        // misuse as marker
+        ray[4] = 1;   // start row
+        ray[5] = 4;   //
+        ray[7] = 7;   // promotion row
     }
 
 }
@@ -305,7 +305,7 @@ bool Pawn::CanMoveTo(int destination, Board& board) const {
     if( destination == onestep ) return true;
     
     //advance two steps
-    if( nRay == 0 || board.IsOccupied(onestep)) return false;
+    if( ray[4] != square/8 || board.IsOccupied(onestep)) return false;
     if( destination == mailbox[ mailbox2board[onestep] + ray[0] ] ) return true;
  
     return false;
@@ -336,9 +336,10 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
     if( board.IsEmpty(to) ) {
         moves.Insert(Move(square, to));
 
-        if( nRay == 1 ) {
+        if( ray[4] == square/8 ) {
             // advance on more step
             to = mailbox[ mailbox2board[to] + ray[0] ];
+            //std::cout << square/8 << "  " << ray[4] << std::endl;
             if( board.IsEmpty(to) ) moves.Insert(Move(square, to));
         }
     }

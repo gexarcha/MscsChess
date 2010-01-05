@@ -382,9 +382,10 @@ std::string square2string(int square) {
 
 #include "SearchAgent.h"
 
-void Board::SearchMove() {
+Move Board::SearchMove() {
 	SearchAgent agent(*this);
 	Move move = agent.GetBestMove();
+	return move;
 }
 
 void Board::PrintPieces() {
