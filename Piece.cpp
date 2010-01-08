@@ -73,13 +73,13 @@ bool Piece::CrawlerGenerateMoves(Moves& moves, Board& board) const {
         // outside: ignore
         if(to == -1) continue;
         // empty: create move
-        else if ( board.IsEmpty(to) ) moves.Insert(Move(square,to));
+        else if ( board.IsEmpty(to) ) moves.Insert(Move::CreateNormalMove(square, to, board.GetPiece(square)));
         // own side: ignore
         else if ( board.IsSide(side, to) ) continue;
         // opposite king: position is invalid
         else if ( board.IsKing(to) ) return false;
         // capture: create Move
-        else moves.Insert(Move(square, to, Move::CAPTURE));
+        else moves.Insert(Move::CreateCaptureMove(square, to, board.GetPiece(square), board.GetPiece(to)));
     }
     return true;
 }
@@ -92,7 +92,7 @@ bool Piece::SliderGenerateMoves(Moves& moves, Board& board) const {
                 break;
             }
             if(board.IsEmpty(to)) {
-                moves.Insert(Move(square, to));
+                moves.Insert(Move::CreateNormalMove(square, to, board.GetPiece(square)));
                 continue;
             } else if(board.IsSide(side, to)) {
                 break;
@@ -101,7 +101,7 @@ bool Piece::SliderGenerateMoves(Moves& moves, Board& board) const {
                 return false;
             }
             else {
-                moves.Insert(Move(square, to, Move::CAPTURE));
+                moves.Insert(Move::CreateCaptureMove(square, to, board.GetPiece(square), board.GetPiece(to)));
                 break; 
             }
         }
@@ -114,11 +114,19 @@ bool Piece::SliderGenerateMoves(Moves& moves, Board& board) const {
 King::King(Side s, int square) : Piece(s, square) {
     if(side == WHITE){
     	shortName = 'K';
-    	score = KING;
+    	if (square == 60) {
+    		castlingMask ^= Board::WHITE_QUEEN_SIDE;
+    		castlingMask ^= Board::WHITE_KING_SIDE;
+    	}
     } else {
     	shortName = 'k';
-    	score = -KING;
+       	if (square == 4) {
+        		castlingMask ^= Board::BLACK_QUEEN_SIDE;
+        		castlingMask ^= Board::BLACK_KING_SIDE;
+        }
     }
+    score = KING;
+
     nRay = 8;
     ray[0] = -11;
     ray[1] = -10;
@@ -135,10 +143,32 @@ bool King::Attacks(int destination, Board&) const {
 }
 
 bool King::CanMoveTo(int destination, Board& board) const { 
+	if( destination == square + 2) {
+	    if(    board.CastleKingSideAllowed() &&
+		       board.IsEmpty(square+1) &&
+		       board.IsEmpty(square+2) &&
+		       !board.IsInCheck(side) &&
+		       !board.IsUnderAttack(square+1, side) &&
+		       !board.IsUnderAttack(square+2, side)
+	       ) return true;
+	}
+	if( destination == square - 2) {
+
+	    if(    board.CastleQueenSideAllowed() &&
+		       board.IsEmpty(square-1) &&
+		       board.IsEmpty(square-2) &&
+		       board.IsEmpty(square-3) &&
+		       !board.IsInCheck(side) &&
+		       !board.IsUnderAttack(square-1, side) &&
+		       !board.IsUnderAttack(square-2, side)
+	       ) return true;
+	}
     return CrawlerCanMoveTo(destination, board); 
 }
 
 bool King::GenerateMoves(Moves& moves, Board& board) const {
+	if( board.IsCastleKingSidePossible() ) moves.Insert(Move::CreateKingSideCastlingMove(square, board.GetPiece(square), board.GetPiece(square+3)));
+	if( board.IsCastleQueenSidePossible() ) moves.Insert(Move::CreateQueenSideCastlingMove(square, board.GetPiece(square), board.GetPiece(square-4)));
     return CrawlerGenerateMoves(moves, board);
 }
 
@@ -146,11 +176,10 @@ bool King::GenerateMoves(Moves& moves, Board& board) const {
 Queen::Queen(Side s, int square) : Piece(s, square) {
     if(side == WHITE){
     	shortName = 'Q';
-    	score = QUEEN;
     } else {
     	shortName = 'q';
-    	score = -QUEEN;
     }
+    score = QUEEN;
     nRay = 8;
     ray[0] = -11;
     ray[1] = -10;
@@ -178,11 +207,14 @@ bool Queen::GenerateMoves(Moves& moves, Board& board) const {
 Rock::Rock(Side s, int square) : Piece(s, square) {
     if(side == WHITE){
      	shortName = 'R';
-     	score = ROCK;
-     } else {
+     	if (square == 56) castlingMask ^= Board::WHITE_QUEEN_SIDE;
+     	if (square == 63) castlingMask ^= Board::WHITE_KING_SIDE;
+    } else {
      	shortName = 'r';
-     	score = -ROCK;
-     }
+      	if (square == 0) castlingMask ^= Board::BLACK_QUEEN_SIDE;
+        if (square == 7) castlingMask ^= Board::BLACK_KING_SIDE;
+    }
+    score = ROCK;
     nRay = 4;
     ray[0] = -10;
     ray[1] = -1;
@@ -205,11 +237,10 @@ bool Rock::GenerateMoves(Moves& moves, Board& board) const {
 Bishop::Bishop(Side s, int square) : Piece(s, square) {
     if(side == WHITE){
      	shortName = 'B';
-     	score = BISHOP;
-     } else {
+    } else {
      	shortName = 'b';
-     	score = -BISHOP;
-     }
+    }
+    score = BISHOP;
     nRay = 4;
     ray[0] = -11;
     ray[1] = -9;
@@ -232,11 +263,10 @@ bool Bishop::GenerateMoves(Moves& moves, Board& board) const {
 Knight::Knight(Side s, int square) : Piece(s, square) {
     if(side == WHITE){
      	shortName = 'N';
-     	score = KNIGHT;
-     } else {
+    } else {
      	shortName = 'n';
-     	score = -KNIGHT;
-     }
+    }
+    score = KNIGHT;
     nRay = 8;
     ray[0] = -21;
     ray[1] = -19;
@@ -263,7 +293,6 @@ bool Knight::GenerateMoves(Moves& moves, Board& board) const {
 Pawn::Pawn(Side s, int square) : Piece(s, square) {
     if(side == WHITE) {
         shortName = 'P';
-        score = PAWN;
         ray[0] = -10; // advance one step
         ray[1] = -11; // capture right
         ray[2] = -9;  // capture left
@@ -273,7 +302,6 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
         ray[7] = 0;   // promotion row
     } else {
         shortName = 'p';
-        score = - PAWN;
         ray[0] = 10; // advance one step
         ray[1] = 11; // capture right
         ray[2] = 9;  // capture left
@@ -282,6 +310,7 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
         ray[5] = 4;   //
         ray[7] = 7;   // promotion row
     }
+    score = PAWN;
 
 }
 
@@ -324,7 +353,7 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
         if(board.IsOccupied(to)) {
             if(!board.IsSide(side,to) ) {
                 if(board.IsKing(to)) return false;
-                else moves.Insert(Move(square,to, Move::CAPTURE));
+                else moves.Insert(Move::CreateCaptureMove(square, to, board.GetPiece(square), board.GetPiece(to)));
             }
         }
     }
@@ -334,16 +363,21 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
 
     to = mailbox[ mailbox2board[square] + ray[0] ];
     if( board.IsEmpty(to) ) {
-        moves.Insert(Move(square, to));
+    	moves.Insert(Move::CreateNormalMove(square, to, board.GetPiece(square)));
 
         if( ray[4] == square/8 ) {
             // advance on more step
             to = mailbox[ mailbox2board[to] + ray[0] ];
             //std::cout << square/8 << "  " << ray[4] << std::endl;
-            if( board.IsEmpty(to) ) moves.Insert(Move(square, to));
+            if( board.IsEmpty(to) ) moves.Insert(Move::CreateNormalMove(square, to, board.GetPiece(square)));
         }
     }
 
     return true;
 }
 
+bool operator>(const Piece& left, const Piece& right) {
+	std::cout << " in < " << std::endl;
+	if(left.GetScore() == right.GetScore()) return left.GetSquare() < right.GetSquare();
+	return left.GetScore() < right.GetScore();
+}

@@ -22,13 +22,16 @@ public:
 
     virtual bool Attacks(int destination, Board& board) const = 0;
     virtual bool CanMoveTo(int destination, Board& board) const = 0;
-    void MoveTo(int to) { square = to; if(nRay==1) nRay=0;};
+    void MoveTo(int to) { square = to;};
     virtual bool GenerateMoves(Moves& moves, Board& board) const = 0;
     int GetSquare() const  { return square; }
-    int GetScore() const { return score; }
+    int GetScore() const { return (square < 0) ? 0 : score; }
+    //int UpdateCastlingFlags(int flags) const { return flags&castlingMask; }
+    int GetCastlingMask() const { return castlingMask; }
+
 
 protected:
-    Piece(Side s, int square) : side(s), square(square) {};
+    Piece(Side s, int square) : side(s), square(square), castlingMask(-1) {};
 
     bool CrawlerAttacks(int destination) const;
     bool SliderAttacks(int destination, Board& board) const;
@@ -42,6 +45,7 @@ protected:
     Side side;
     int square;
     int score;
+    int castlingMask;
     int nRay;
     int ray[8];
     char shortName;
@@ -51,6 +55,9 @@ protected:
 
 private:
 };
+
+bool operator>(const Piece& left, const Piece& right);
+
 
 class King : public Piece {
 public:

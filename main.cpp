@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        if(command == "random") {
+        if(command == "rand") {
             board.RandomMove();
             continue;
         }
