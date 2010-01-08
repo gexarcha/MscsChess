@@ -28,8 +28,10 @@ Board is the representation of a chess board the squares are ordered from 0 (a8)
 
 class Board {
 public:
+	enum CastlingFlags {WHITE_KING_SIDE = 1, WHITE_QUEEN_SIDE = 2, BLACK_KING_SIDE = 4, BLACK_QUEEN_SIDE = 8};
+
     Board();
-    void Init(std::string fenPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w");
+    void Init(const std::string& fenPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     bool IsEmpty(int square) const { return board[square] == 0; };
     bool IsOccupied(int square) const { return !IsEmpty(square); };
     bool IsSide(Piece::Side s, int square) const { 
@@ -44,17 +46,25 @@ public:
     void Show();
     void DoMove(std::string move);
     bool DoMove(Move move);
+    void MoveTo(Piece* piece, int from, int to);
     void UndoMove();
     void RandomMove();
     std::string XRandomMove();
     Move SearchMove();
+    bool IsUnderAttack(int square, Piece::Side s);
     bool IsInCheck(Piece::Side s);
+
+    Piece* GetPiece(int square) { return board[square]; }
 
     int GetMaterialScore() const;
 
     bool GeneratePseudoLegalMoves(Moves& moves);
     bool GenerateCaptureMoves(Moves& moves);
 
+    bool CastleKingSideAllowed() const { return ( sideToMove == Piece::WHITE ? castlingFlag&WHITE_KING_SIDE : castlingFlag&BLACK_KING_SIDE); }
+    bool CastleQueenSideAllowed() const { return ( sideToMove == Piece::WHITE ? castlingFlag&WHITE_QUEEN_SIDE : castlingFlag&BLACK_QUEEN_SIDE); }
+    bool IsCastleKingSidePossible();
+    bool IsCastleQueenSidePossible();
     Piece::Side SideToMove() const { return sideToMove; }
 
     Piece::Side SideToWait() const {
@@ -62,18 +72,21 @@ public:
        else                             return Piece::WHITE;
     }
     void ApplyMove(Move move);
+    int GetCastlingFlag() const { return castlingFlag; }
+    void SetCastlingFlag(int status) { castlingFlag = status; }
 
 private:
-    /**
-    piece[0] are the black pieces, piece[1] are the white pieces, the kings are in the first element p[i][0].
-    */
-    std::vector<Piece*> piece[2];
+
     std::vector<Piece*> board;
+    std::vector<Piece*> whitePieces;
+    std::vector<Piece*> blackPieces;
+    int castlingFlag;
+    int enpassantSquare;
+    int fullMoveCounter;
+    int fiftyMoveRuleCounter;
+
     std::vector<Move> moveStack;
     Piece::Side sideToMove;
-
-    int ply;
-
 
     void PrintPieces();
 
