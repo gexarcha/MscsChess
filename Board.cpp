@@ -181,8 +181,6 @@ void Board::Show() {
     }
     cout << "\n   --------------------------------\n";
     cout << "     a   b   c   d   e   f   g   h \n\n";
-
-    cout << "castlingFlags:  " << castlingFlag << endl;
 }
 
 void Board::DoMove(std::string move) {
@@ -215,8 +213,10 @@ void Board::DoMove(std::string move) {
 
     if(move == "e1g1" || move == "e8g8") {
     	if(IsCastleKingSidePossible()) m = Move::CreateKingSideCastlingMove(from, fromPiece, GetPiece(from+3));
+    	else throw std::string("king side castling not allowed");
     } else if(move == "e1c1" || move == "e8c8") {
     	if(IsCastleQueenSidePossible()) m = Move::CreateQueenSideCastlingMove(from, fromPiece, GetPiece(from-4));
+    	else throw std::string("queen side castling not allowed");
     } else if(toPiece) m = Move::CreateCaptureMove(from, to, fromPiece, toPiece);
     else m= Move::CreateNormalMove(from, to, fromPiece);
     // now we have a legal move, do it
@@ -257,13 +257,9 @@ void Board::MoveTo(Piece* piece, int from, int to) {
 }
 
 bool Board::DoMove(Move move) {
-
-	//std::cerr << " in do move " << move << " ";
-
     ApplyMove(move);
-    
+
     if ( IsInCheck(SideToWait()) ) {
-    	//std::cerr << " in check ";
         UndoMove();
         return false;
     }
@@ -461,13 +457,13 @@ std::string Board::XRandomMove() {
 
 bool Board::IsCastleKingSidePossible()  {
     int square = (sideToMove == Piece::WHITE) ? 60 : 4;
-	return  CastleKingSideAllowed() && IsEmpty(square+1) && IsEmpty(square+2) && IsInCheck(sideToMove)
+	return  CastleKingSideAllowed() && IsEmpty(square+1) && IsEmpty(square+2) && !IsInCheck(sideToMove)
 			&& !IsUnderAttack(square+1, sideToMove) && !IsUnderAttack(square+2, sideToMove);
 }
 
 bool Board::IsCastleQueenSidePossible() {
     int square = (sideToMove == Piece::WHITE) ? 60 : 4;
 	return  CastleQueenSideAllowed() && IsEmpty(square-1) && IsEmpty(square-2) && IsEmpty(square-3)
-			&& IsInCheck(sideToMove) && !IsUnderAttack(square-1, sideToMove) && !IsUnderAttack(square-2, sideToMove);
+			&& !IsInCheck(sideToMove) && !IsUnderAttack(square-1, sideToMove) && !IsUnderAttack(square-2, sideToMove);
 }
 

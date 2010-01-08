@@ -63,7 +63,6 @@ Move Move::CreateEnPassantMove(int from, int to, int ep, Piece* pawn, Piece* cap
 }
 
 Move Move::CreateKingSideCastlingMove(int fromKing, Piece* king, Piece* rock) {
-	std::cout << "CreateKingSindCastlingMove\n";
 	return Move(CASTLING, fromKing, fromKing+2, king, rock, fromKing+3, fromKing+1);
 }
 
