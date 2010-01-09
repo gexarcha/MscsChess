@@ -251,12 +251,14 @@ void Board::ApplyMove(Move move) {
 }
 
 void Board::MoveTo(Piece* piece, int from, int to) {
+        //std::cout << "Board::MoveTo " << piece <<" " << from << " " << to << std::endl;
 	if(piece) piece->MoveTo(to);
 	if(to > -1) board[to] = piece;
 	if(from > -1) board[from] = 0;
 }
 
 bool Board::DoMove(Move move) {
+    //std::cout << "Board::DoMove "; move.Print();
     ApplyMove(move);
 
     if ( IsInCheck(SideToWait()) ) {
@@ -312,12 +314,14 @@ bool Board::IsUnderAttack(int square, Piece::Side s) {
 
 	int nPieces = oppositePieces.size();
 	for(int i=0; i<nPieces; ++i) {
+            if( oppositePieces[i]->GetSquare() == -1) continue;
 	    if( oppositePieces[i]->Attacks(square, *this) ) return true;
 	}
 	return false;
 }
 
 bool Board::IsInCheck(Piece::Side s) {
+    //std::cout << "Board::IsInCheck " << s << std::endl;
     int kingSquare = ((s == Piece::WHITE) ? whitePieces : blackPieces)[0]->GetSquare();
     return IsUnderAttack(kingSquare, s);
 }
@@ -422,6 +426,14 @@ Move Board::SearchMove() {
 	SearchAgent agent(*this);
 	Move move = agent.GetBestMove();
 	return move;
+}
+
+string Board::XSearchMove() {
+	SearchAgent agent(*this);
+	Move move = agent.GetBestMove();
+        string result = square2string(move.From());
+        result += square2string(move.To());
+	return result;
 }
 
 void Board::PrintPieces() {

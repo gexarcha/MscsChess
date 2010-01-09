@@ -334,7 +334,8 @@ void xboard(Board& board) {
                  logfile << command << endl;
                  board.DoMove(command);
 
-                 string move = board.XRandomMove();
+                 string move = board.XSearchMove();
+                 board.DoMove(move);
                  cout << "move " << move << endl;
                  logfile << "my move " << move << endl;
              }

@@ -7,10 +7,11 @@ std::ostream& operator<<(std::ostream& o, const Move& m) {
 }
 
 void Move::Do(Board& board) {
-	castlingStatusBackup = board.GetCastlingFlag();
-	board.SetCastlingFlag(castlingStatusBackup & piece1->GetCastlingMask());
 
-	board.MoveTo(piece2, from2, to2);
+    castlingStatusBackup = board.GetCastlingFlag();
+    board.SetCastlingFlag(castlingStatusBackup & piece1->GetCastlingMask());
+
+    board.MoveTo(piece2, from2, to2);
     board.MoveTo(piece1, from1, to1);
 
 }

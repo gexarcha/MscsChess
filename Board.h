@@ -51,6 +51,7 @@ public:
     void RandomMove();
     std::string XRandomMove();
     Move SearchMove();
+    std::string XSearchMove();
     bool IsUnderAttack(int square, Piece::Side s);
     bool IsInCheck(Piece::Side s);
 
