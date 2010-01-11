@@ -422,18 +422,16 @@ std::string square2string(int square) {
 
 #include "SearchAgent.h"
 
-Move Board::SearchMove() {
+Move Board::SearchMove(int outputIndicator) {
 	SearchAgent agent(*this);
-	Move move = agent.GetBestMove();
+	Move move = agent.GetBestMove(outputIndicator);
 	return move;
 }
 
 string Board::XSearchMove() {
 	SearchAgent agent(*this);
 	Move move = agent.GetBestMove();
-        string result = square2string(move.From());
-        result += square2string(move.To());
-	return result;
+	return square2string(move.From()) + square2string(move.To());
 }
 
 void Board::PrintPieces() {

@@ -50,7 +50,7 @@ public:
     void UndoMove();
     void RandomMove();
     std::string XRandomMove();
-    Move SearchMove();
+    Move SearchMove(int outputIndicator);
     std::string XSearchMove();
     bool IsUnderAttack(int square, Piece::Side s);
     bool IsInCheck(Piece::Side s);

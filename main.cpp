@@ -74,11 +74,11 @@ int main(int argc, char* argv[]) {
         }
 
         if(command == "hint") {
-            board.SearchMove();
+            board.SearchMove(1);
             continue;
         }
         if(command == "move") {
-             board.ApplyMove(board.SearchMove());
+             board.ApplyMove(board.SearchMove(1));
              board.Show();
              continue;
         }
