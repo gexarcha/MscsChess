@@ -9,7 +9,7 @@ class Moves;
 class Piece {
 public:
     enum Side {BLACK, WHITE };
-    enum Score {PAWN = 100, KNIGHT = 300, BISHOP = 325, ROCK = 500, QUEEN = 900, KING = 10000};
+    enum Score {PAWN = 100, KNIGHT = 300, BISHOP = 325, ROCK = 500, QUEEN = 900, KING = 5000};
 
     virtual ~Piece();
 

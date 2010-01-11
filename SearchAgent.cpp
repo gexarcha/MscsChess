@@ -9,6 +9,9 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
 
     Moves moves;
     if(!board.GeneratePseudoLegalMoves(moves)) return ILLEGAL;
+    //if(depth == 1) moves.Print();
+    moves.Sort();
+    //if(depth == 1) moves.Print();
 
     int nMoves = moves.Size();
     for(int i = 0; i<nMoves; ++i) {
@@ -44,7 +47,7 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
 }
 
 Move SearchAgent::GetBestMove(int outputIndicator) {
-        int depth = 3;
+        int depth = 4;
 
 	clock_t start, end;
 	double cpuTime;

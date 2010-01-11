@@ -3,7 +3,7 @@
 #include <iostream>
 
 std::ostream& operator<<(std::ostream& o, const Move& m) {
-	return (o << square2string(m.From()) << square2string(m.To()) );
+	return (o << square2string(m.From()) << square2string(m.To()) /*<<"=" << m.GetScore() << " "*/ );
 }
 
 void Move::Do(Board& board) {

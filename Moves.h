@@ -2,10 +2,15 @@
 #define MOVES_H
 
 #include "Move.h"
-
+#include <algorithm>
 #include <vector>
-
 #include <iostream>
+
+
+class ScoreSort {
+  public:
+  	bool operator()(const Move& left, const Move right) { return left.GetScore() > right.GetScore(); }
+};
 
 class Moves {
 public:
@@ -14,6 +19,7 @@ public:
     Move& operator[](int i) { return moves[i]; }
     int Size() { return moves.size(); }
     Move GetRandom();
+    void Sort() { std::sort( moves.begin(), moves.end(), ScoreSort() ); }
 private:
     std::vector<Move> moves;
 };

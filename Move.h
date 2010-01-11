@@ -4,7 +4,8 @@
 #include <iostream>
 #include <string>
 
-class Piece;
+#include "Piece.h"
+
 class Board;
 
 class Move {
@@ -37,9 +38,10 @@ public:
     //void SetCapturedPiece(Piece* piece) { captured = piece; }
     //Piece* GetCapturedPiece() const { return captured; }
     void Print();
+    int GetScore() const { return score; }
 private:
-    Move(Type t, int from1, int to1, Piece* p1 = 0, Piece* p2 = 0, int from2 = -1, int to2 = -1)
-    : from1(from1), to1(to1), from2(from2), to2(to2), piece1(p1), piece2(p2), type(t) {}
+    Move(Type t, int from1, int to1, Piece* p1 = 0, Piece* p2 = 0, int from2 = -1, int to2 = -1, int score = 0)
+    : from1(from1), to1(to1), from2(from2), to2(to2), piece1(p1), piece2(p2), type(t), score(score) {}
     int from1;
     int to1;
     int from2;
@@ -48,6 +50,7 @@ private:
     Piece* piece2;
     Type type;
     int castlingStatusBackup;
+    int score;
 };
 
 Move Move::CreateNormalMove(int from, int to, Piece* piece) {
@@ -55,7 +58,8 @@ Move Move::CreateNormalMove(int from, int to, Piece* piece) {
 }
 
 Move Move::CreateCaptureMove(int from, int to, Piece* piece, Piece* captured) {
-    return Move(CAPTURE, from, to, piece, captured, to, -1);
+    int score = captured->GetScore() - piece->GetScore()/100;
+    return Move(CAPTURE, from, to, piece, captured, to, -1, score);
 }
 
 Move Move::CreateEnPassantMove(int from, int to, int ep, Piece* pawn, Piece* captured) {
