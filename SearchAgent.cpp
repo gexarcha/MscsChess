@@ -53,27 +53,33 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta, vector<Move> & princi
 }
 
 Move SearchAgent::GetBestMove(int outputIndicator) {
-        int depth = 4;
+        int maxDepth = 6;
 
 	clock_t start, end;
 	double cpuTime;
         start = std::clock();
 
-	int score = AlphaBeta(depth,MIN_SCORE, MAX_SCORE, bestMoves);
-
-  	end = clock();
-    	cpuTime = std::difftime(end, start)/CLOCKS_PER_SEC;
-
-        evaluator.Reset();
-    	int nNodes = checkedNodes;
-    	checkedNodes = 0;
-        if(outputIndicator > 0) {
-	    std::cout << bestMoves[0] << " score = " << score << std::endl;
-            std::cout << "checked " << nNodes << " nodes in " << cpuTime << " s " << nNodes/cpuTime << " nodes/s \n";
+        for(int depth = 0; depth < maxDepth; ++depth) {
+           start = std::clock();
+	   int score = AlphaBeta(depth, MIN_SCORE, MAX_SCORE, bestMoves);
+  	   end = clock();
+    	   cpuTime = std::difftime(end, start)/CLOCKS_PER_SEC;
+           evaluator.Reset();
+    	   int nNodes = checkedNodes;
+    	   checkedNodes = 0;
+           if(outputIndicator > 0) {
+	       std::cout << "depth = " << depth << " move: " << bestMoves[0] << " score = " << score << std::endl;
+               std::cout << "checked " << nNodes << " nodes in " << cpuTime << " s " << nNodes/cpuTime << " nodes/s \n";
+               if(score == -MATE_SCORE + depth -1) std::cout << "checkmate" << std::endl;
+	       for(int i=0; i<bestMoves.size(); ++i) std::cout << bestMoves[i] << ", ";
+               std::cout << std::endl;
+           }
+           if(outputIndicator == 0) {
+               std::cout << depth << ' ' << score << ' ' << (int) (cpuTime*100) << ' ' << nNodes << ' ';
+               for(int i=0; i<bestMoves.size(); ++i) std::cout << bestMoves[i] << ", ";
+               std::cout << std::endl;
+           }
         }
-
-        if(score == -MATE_SCORE + depth -1) std::cout << "checkmate" << std::endl;
-	for(int i=0; i<bestMoves.size(); ++i) std::cout << bestMoves[i] << ", ";
         // std::cout << std::endl;
 	return bestMoves[0];
 }

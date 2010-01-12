@@ -19,6 +19,8 @@ private:
 	int checkedNodes;
 	int ply;
 
+        bool followPV;
+
 	static const int MAX_PLY = 50;
 	static const int MIN_SCORE = -30000;
 	static const int MATE_SCORE = -10000;
