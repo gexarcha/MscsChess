@@ -8,7 +8,7 @@
 
 class SearchAgent {
 public:
-	SearchAgent(Board b) : board(b), evaluator(board), bestMoves(MAX_PLY), checkedNodes(0), ply(0) {}
+	SearchAgent(Board b) : board(b), evaluator(board), checkedNodes(0), ply(0) {}
 
 	Move GetBestMove(int outputIndicator = 0);
 
@@ -25,7 +25,7 @@ private:
 	static const int MAX_SCORE = +30000;
 	static const int ILLEGAL = 30000;
 
-	int AlphaBeta(int depth, int alpha, int beta);
+	int AlphaBeta(int depth, int alpha, int beta, std::vector<Move>& principleVariation);
 };
 
 #endif /* SEARCHAGENT_H */

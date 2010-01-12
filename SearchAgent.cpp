@@ -1,12 +1,14 @@
 #include "SearchAgent.h"
 
 #include <iostream>
+#include <vector>
+using std::vector;
 
-int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
-	checkedNodes++;
+int SearchAgent::AlphaBeta(int depth, int alpha, int beta, vector<Move> & principleVariation) {
+    checkedNodes++;
     int bestScore = MIN_SCORE;
     int score = MIN_SCORE;
-
+    vector<Move> line;
     Moves moves;
     if(!board.GeneratePseudoLegalMoves(moves)) return ILLEGAL;
     //if(depth == 1) moves.Print();
@@ -19,10 +21,10 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
         board.ApplyMove(moves[i]); ply++;
 
         if(depth == 0) {
-        	if(moves[i].IsCapture()) score = -AlphaBeta(depth, -beta, -alpha);
+        	if(moves[i].IsCapture()) score = -AlphaBeta(depth, -beta, -alpha, line);
         	else score = evaluator.Score();
         }
-        else score = - AlphaBeta(depth-1, -beta, -alpha);
+        else score = - AlphaBeta(depth-1, -beta, -alpha, line);
 
         board.UndoMove(); ply--;
 
@@ -32,7 +34,11 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta) {
         if(bestScore > alpha) {
          	if(bestScore >= beta) return bestScore;
         	alpha = bestScore;
-        	bestMoves[ply] = moves[i];
+        	//bestMoves[ply] = moves[i];
+                principleVariation.clear();
+                principleVariation.push_back(moves[i]);
+                std::copy (line.begin(), line.end(), std::back_inserter (principleVariation));
+
         }
         //if(alpha >= beta) return alpha;
     }
@@ -53,7 +59,7 @@ Move SearchAgent::GetBestMove(int outputIndicator) {
 	double cpuTime;
         start = std::clock();
 
-	int score = AlphaBeta(depth,MIN_SCORE, MAX_SCORE);
+	int score = AlphaBeta(depth,MIN_SCORE, MAX_SCORE, bestMoves);
 
   	end = clock();
     	cpuTime = std::difftime(end, start)/CLOCKS_PER_SEC;
@@ -67,7 +73,7 @@ Move SearchAgent::GetBestMove(int outputIndicator) {
         }
 
         if(score == -MATE_SCORE + depth -1) std::cout << "checkmate" << std::endl;
-	// for(int i=0; i<MAX_PLY; ++i) std::cout << bestMoves[i] << ", ";
+	for(int i=0; i<bestMoves.size(); ++i) std::cout << bestMoves[i] << ", ";
         // std::cout << std::endl;
 	return bestMoves[0];
 }
