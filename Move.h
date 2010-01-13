@@ -49,6 +49,7 @@ public:
     std::string Move2Can() const;
     void Print();
     int GetScore() const { return score; }
+    void SetScore(int s) { score = s; }
     Type GetType() const {  return type; }
 
 private:

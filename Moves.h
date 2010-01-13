@@ -22,7 +22,11 @@ public:
     void Sort() { std::sort( moves.begin(), moves.end(), ScoreSort() ); }
     bool Includes(const Move& m) {
         std::vector<Move>::iterator found = std::find(moves.begin(), moves.end(), m);
-        return found != moves.end();
+        if( found != moves.end() ) {
+            found->SetScore(5000);
+            return true;
+        }
+        return false;
     }
 private:
     std::vector<Move> moves;
