@@ -49,6 +49,7 @@ public:
     std::string Move2Can() const;
     void Print();
     int GetScore() const { return score; }
+    Type GetType() const {  return type; }
 
 private:
     Move(Type t, int from1, int to1, Piece* p1 = 0, Piece* p2 = 0, int from2 = -1, int to2 = -1, int score = 0)
@@ -118,6 +119,9 @@ Move Move::CreateCapturePromotion2KnightMove(int from, int to, Piece* piece, Pie
 
 
 std::ostream& operator<<(std::ostream& o, const Move& m);
+
+bool operator==(const Move& left, const Move& right);
+
 
 #endif
 

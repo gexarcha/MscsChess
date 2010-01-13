@@ -6,6 +6,12 @@ std::ostream& operator<<(std::ostream& o, const Move& m) {
         return ( o << m.Move2Can() );
 }
 
+bool operator==(const Move& left, const Move& right) {
+    return left.GetType()==right.GetType() &&
+           left.From() == right.From() &&
+           left.To() == right.To();
+}
+
 void Move::Do(Board& board) {
 
     castlingStatusBackup = board.GetCastlingFlag();

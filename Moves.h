@@ -20,6 +20,10 @@ public:
     int Size() { return moves.size(); }
     Move GetRandom();
     void Sort() { std::sort( moves.begin(), moves.end(), ScoreSort() ); }
+    bool Includes(const Move& m) {
+        std::vector<Move>::iterator found = std::find(moves.begin(), moves.end(), m);
+        return found != moves.end();
+    }
 private:
     std::vector<Move> moves;
 };
