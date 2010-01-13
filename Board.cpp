@@ -217,6 +217,18 @@ void Board::DoMove(std::string move) {
     } else if(move == "e1c1" || move == "e8c8") {
     	if(IsCastleQueenSidePossible()) m = Move::CreateQueenSideCastlingMove(from, fromPiece, GetPiece(from-4));
     	else throw std::string("queen side castling not allowed");
+    } else if(move.size() == 5 && move[4] == 'q') {
+       if(toPiece) m = Move::CreateCapturePromotion2QueenMove(from, to, fromPiece, toPiece);
+       else m= Move::CreateNormalPromotion2QueenMove(from, to, fromPiece);
+    }  else if(move.size() == 5 && move[4] == 'r') {
+       if(toPiece) m = Move::CreateCapturePromotion2RockMove(from, to, fromPiece, toPiece);
+       else m= Move::CreateNormalPromotion2RockMove(from, to, fromPiece);
+    }  else if(move.size() == 5 && move[4] == 'b') {
+       if(toPiece) m = Move::CreateCapturePromotion2BishopMove(from, to, fromPiece, toPiece);
+       else m= Move::CreateNormalPromotion2BishopMove(from, to, fromPiece);
+    }  else if(move.size() == 5 && move[4] == 'n') {
+       if(toPiece) m = Move::CreateCapturePromotion2KnightMove(from, to, fromPiece, toPiece);
+       else m= Move::CreateNormalPromotion2KnightMove(from, to, fromPiece);
     } else if(toPiece) m = Move::CreateCaptureMove(from, to, fromPiece, toPiece);
     else m= Move::CreateNormalMove(from, to, fromPiece);
     // now we have a legal move, do it
@@ -245,7 +257,7 @@ void Board::DoMove(std::string move) {
 
 void Board::ApplyMove(Move move) {
 
-	move.Do(*this);
+    move.Do(*this);
     moveStack.push_back(move);
     SwitchSide();
 }
@@ -452,17 +464,7 @@ std::string Board::XRandomMove() {
         m = moves[i];
         if( DoMove(m) ) done=true;
     }
-
-    std::string result;
-    char lines[] = "87654321";
-    char columns[] = "abcdefgh"; 
-
-    result += columns[m.From()%8];
-    result += lines[m.From()/8];
-    result += columns[m.To()%8];
-    result += lines[m.To()/8];
-    
-    return result;
+    return m.Move2Can();
 }
 
 bool Board::IsCastleKingSidePossible()  {

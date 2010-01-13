@@ -10,9 +10,16 @@ class Board;
 
 class Move {
 public:
-	enum Type { UNKNOWN, NORMAL, CAPTURE, ENPASSANT, CASTLING, NORMAL_PROMOTION2QUEEN=16, CAPTURE_PROMOTION2QUEEN };
+	enum Type {  
+                     UNKNOWN = 0, CAPTURE = 1, NORMAL = 2, 
+                     ENPASSANT = 3, CASTLING, 
+                     NORMAL_PROMOTION2QUEEN=16, CAPTURE_PROMOTION2QUEEN,
+                     NORMAL_PROMOTION2ROCK, CAPTURE_PROMOTION2ROCK, 
+                     NORMAL_PROMOTION2BISHOP, CAPTURE_PROMOTION2BISHOP,
+                     NORMAL_PROMOTION2KNIGHT, CAPTURE_PROMOTION2KNIGHT 
+                  };
 
-    Move() : from1(-1), to1(-1), from2(-1), to2(-1), piece1(0), piece2(0), type(UNKNOWN) {}
+    Move() : from1(-1), to1(-1), from2(-1), to2(-1), piece1(0), piece2(0), type(UNKNOWN), score(0) {}
 
 
     inline static Move CreateNormalMove(int from, int to, Piece* piece);
@@ -22,6 +29,12 @@ public:
     inline static Move CreateQueenSideCastlingMove(int from, Piece* king, Piece* rock);
     inline static Move CreateNormalPromotion2QueenMove(int from, int to, Piece* pawn);
     inline static Move CreateCapturePromotion2QueenMove(int from, int to, Piece* pawn, Piece* captured);
+    inline static Move CreateNormalPromotion2RockMove(int from, int to, Piece* pawn);
+    inline static Move CreateCapturePromotion2RockMove(int from, int to, Piece* pawn, Piece* captured);
+    inline static Move CreateNormalPromotion2BishopMove(int from, int to, Piece* pawn);
+    inline static Move CreateCapturePromotion2BishopMove(int from, int to, Piece* pawn, Piece* captured);
+    inline static Move CreateNormalPromotion2KnightMove(int from, int to, Piece* pawn);
+    inline static Move CreateCapturePromotion2KnightMove(int from, int to, Piece* pawn, Piece* captured);
 
     bool IsPromotion() const { return type > 15; }
 
@@ -34,9 +47,10 @@ public:
     //int To2() const { return to; }
     //Piece* Piece1() const { return piece1; }
     //Piece* Piece2() const { return piece2; }
-    bool IsCapture() { return type == CAPTURE; }
+    bool IsCapture() { return type & 1; }
     //void SetCapturedPiece(Piece* piece) { captured = piece; }
     //Piece* GetCapturedPiece() const { return captured; }
+    std::string Move2Can() const;
     void Print();
     int GetScore() const { return score; }
 private:
@@ -81,6 +95,30 @@ Move Move::CreateNormalPromotion2QueenMove(int from, int to, Piece* piece) {
 Move Move::CreateCapturePromotion2QueenMove(int from, int to, Piece* piece, Piece* captured) {
     return Move(CAPTURE_PROMOTION2QUEEN, from, to, piece, captured, from, -1);
 }
+
+Move Move::CreateNormalPromotion2RockMove(int from, int to, Piece* piece) {
+    return Move(NORMAL_PROMOTION2ROCK, from, to, piece, (Piece*) 0, from, -1);
+}
+
+Move Move::CreateCapturePromotion2RockMove(int from, int to, Piece* piece, Piece* captured) {
+    return Move(CAPTURE_PROMOTION2ROCK, from, to, piece, captured, from, -1);
+}
+
+Move Move::CreateNormalPromotion2BishopMove(int from, int to, Piece* piece) {
+    return Move(NORMAL_PROMOTION2BISHOP, from, to, piece, (Piece*) 0, from, -1);
+}
+
+Move Move::CreateCapturePromotion2BishopMove(int from, int to, Piece* piece, Piece* captured) {
+    return Move(CAPTURE_PROMOTION2BISHOP, from, to, piece, captured, from, -1);
+}
+Move Move::CreateNormalPromotion2KnightMove(int from, int to, Piece* piece) {
+    return Move(NORMAL_PROMOTION2KNIGHT, from, to, piece, (Piece*) 0, from, -1);
+}
+
+Move Move::CreateCapturePromotion2KnightMove(int from, int to, Piece* piece, Piece* captured) {
+    return Move(CAPTURE_PROMOTION2KNIGHT, from, to, piece, captured, from, -1);
+}
+
 
 std::ostream& operator<<(std::ostream& o, const Move& m);
 

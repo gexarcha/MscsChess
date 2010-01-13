@@ -353,6 +353,12 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
         if(board.IsOccupied(to)) {
             if(!board.IsSide(side,to) ) {
                 if(board.IsKing(to)) return false;
+                else if( ray[7] == square/8 ) {
+                    moves.Insert(Move::CreateCapturePromotion2QueenMove(square, to, board.GetPiece(square), board.GetPiece(to)));
+                    moves.Insert(Move::CreateCapturePromotion2RockMove(square, to, board.GetPiece(square), board.GetPiece(to)));
+                    moves.Insert(Move::CreateCapturePromotion2BishopMove(square, to, board.GetPiece(square), board.GetPiece(to)));
+                    moves.Insert(Move::CreateCapturePromotion2KnightMove(square, to, board.GetPiece(square), board.GetPiece(to)));
+                }
                 else moves.Insert(Move::CreateCaptureMove(square, to, board.GetPiece(square), board.GetPiece(to)));
             }
         }
@@ -363,6 +369,12 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
 
     to = mailbox[ mailbox2board[square] + ray[0] ];
     if( board.IsEmpty(to) ) {
+        if( ray[7] == square/8 ) {
+            moves.Insert(Move::CreateNormalPromotion2QueenMove(square, to, board.GetPiece(square)));
+            moves.Insert(Move::CreateNormalPromotion2RockMove(square, to, board.GetPiece(square)));
+            moves.Insert(Move::CreateNormalPromotion2BishopMove(square, to, board.GetPiece(square)));
+            moves.Insert(Move::CreateNormalPromotion2KnightMove(square, to, board.GetPiece(square)));
+        }
     	moves.Insert(Move::CreateNormalMove(square, to, board.GetPiece(square)));
 
         if( ray[4] == square/8 ) {
