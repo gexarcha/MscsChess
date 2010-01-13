@@ -5,9 +5,17 @@ This is the example project of the winter 2009/2010 Software Design and Construc
 
 \todo fix init() which does not clear the board
 
-\todo introduce castling
+\todo remove test from main
 
-\todo introduce pawn promotion
+\todo refine Evaluator
+
+\todo introduce Opening Book
+
+\todo introduce time control
+
+\todo better interface to xboard
+
+\todo introduce transposition tables
 
 */
 
@@ -310,36 +318,56 @@ void test() {
 
 }
 
+/**
+     Simple interface to xboard: for details  see:
+     http://www.gnu.org/software/xboard/     
+     the communication protocol is described in
+     http://www.gnu.org/software/xboard/engine-intf.html
+*/
 void xboard(Board& board) {
-    string command; 
+ 
     ofstream logfile("logfile.txt");
+
     cout << "feature myname=\"MscsCess.v0\"" << endl;
     cout << "feature time=0" << endl;
     cout << "feature usermove=1" << endl;
     cout << "feature sigint=0" << endl;
     cout << "feature sigterm=0" << endl;
     cout << "feature done=1" << endl;
+
     board.Init();
+
     while(true) {
          // send data to xboard
          cout.flush();
+
+         string command; 
          getline(cin, command);
+
+         // to learn the protocol we log all commands from xboard 
          logfile << command << endl;
+
          if(command == "quit") break;
 
-         if(command.size() > 12 ) {
-             logfile << "parsing usermove: " << endl;
-             if(command.find("usermove") == 0) {
-                 command.erase(0,9);
-                 logfile << command << endl;
-                 board.DoMove(command);
+         if(command.find("usermove") == 0) {
+             // a move from xboard is of the form
+             // "usermove can"  whith can a move in coordinate algebraic notation
 
-                 string move = board.XSearchMove();
-                 board.DoMove(move);
-                 cout << "move " << move << endl;
-                 logfile << "my move " << move << endl;
-             }
+             // erase "usermove "
+             command.erase(0,9);
+
+             // do the move
+             board.DoMove(command);
+
+             // get the move from the board
+             string move = board.XSearchMove();
+
+             // do it on the board
+             board.DoMove(move);
+
+             // send it to xboard and the logfile
+             cout << "move " << move << endl;
+             logfile << "my move " << move << endl;
          }
-
     }
 }

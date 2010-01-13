@@ -263,30 +263,25 @@ void Board::ApplyMove(Move move) {
 }
 
 void Board::MoveTo(Piece* piece, int from, int to) {
-        //std::cout << "Board::MoveTo " << piece <<" " << from << " " << to << std::endl;
 	if(piece) piece->MoveTo(to);
 	if(to > -1) board[to] = piece;
 	if(from > -1) board[from] = 0;
 }
 
 bool Board::DoMove(Move move) {
-    //std::cout << "Board::DoMove "; move.Print();
     ApplyMove(move);
 
     if ( IsInCheck(SideToWait()) ) {
         UndoMove();
         return false;
     }
-
     return true;
-
 }
 
 bool Board::TryMove(Move& move) {
 
-    //std::cerr << " try move " << move << " ";
-	ApplyMove(move);
-    
+    ApplyMove(move);
+
     bool check = IsInCheck(SideToWait());
 
     UndoMove();
@@ -296,14 +291,16 @@ bool Board::TryMove(Move& move) {
 
 void Board::UndoMove() {
 
+    // if there is nothing to undo return
     if(moveStack.size() == 0) return;
 
+    // get the last move from the moveStack
     Move move = moveStack.back();
     moveStack.pop_back();
 
     move.Undo(*this);
 
-	SwitchSide();
+    SwitchSide();
 }
 
 int Board::string2square(std::string square) {

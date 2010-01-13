@@ -6,41 +6,48 @@ using std::vector;
 
 int SearchAgent::AlphaBeta(int depth, int alpha, int beta, vector<Move> & principleVariation) {
     checkedNodes++;
+
     int bestScore = MIN_SCORE;
     int score = MIN_SCORE;
-    vector<Move> line;
+
+  
+
     Moves moves;
     if(!board.GeneratePseudoLegalMoves(moves)) return ILLEGAL;
-    //if(depth == 1) moves.Print();
     moves.Sort();
-    //if(depth == 1) moves.Print();
 
     int nMoves = moves.Size();
     for(int i = 0; i<nMoves; ++i) {
-    	//std::cout << " in AlphaBeta check: " << moves[i] << " depth = " << depth<< std::endl;
-        board.ApplyMove(moves[i]); ply++;
+        board.ApplyMove(moves[i]);
 
+        vector<Move> line;
         if(depth == 0) {
         	if(moves[i].IsCapture()) score = -AlphaBeta(depth, -beta, -alpha, line);
         	else score = evaluator.Score();
         }
         else score = - AlphaBeta(depth-1, -beta, -alpha, line);
 
-        board.UndoMove(); ply--;
+        board.UndoMove(); 
 
         if(score == ILLEGAL) continue;
 
         if(score > bestScore) bestScore = score;
+
         if(bestScore > alpha) {
-         	if(bestScore >= beta) return bestScore;
-        	alpha = bestScore;
-        	//bestMoves[ply] = moves[i];
-                principleVariation.clear();
-                principleVariation.push_back(moves[i]);
-                std::copy (line.begin(), line.end(), std::back_inserter (principleVariation));
+            alpha = bestScore;
+
+            if(alpha >= beta) return alpha;
+
+            // we have a new best move: update the principle variation
+            // - remove old moves
+            principleVariation.clear();
+            // - put the current move at the first place
+            principleVariation.push_back(moves[i]);
+            // - copy the moves from the child nodes to the principle variation
+            std::copy (line.begin(), line.end(), std::back_inserter (principleVariation));
 
         }
-        //if(alpha >= beta) return alpha;
+
     }
     if (bestScore == MIN_SCORE) {
     	// no legal move
@@ -53,7 +60,7 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta, vector<Move> & princi
 }
 
 Move SearchAgent::GetBestMove(int outputIndicator) {
-        int maxDepth = 6;
+        int maxDepth = 5;
 
 	clock_t start, end;
 	double cpuTime;
@@ -61,12 +68,16 @@ Move SearchAgent::GetBestMove(int outputIndicator) {
 
         for(int depth = 0; depth < maxDepth; ++depth) {
            start = std::clock();
+
 	   int score = AlphaBeta(depth, MIN_SCORE, MAX_SCORE, bestMoves);
+
   	   end = clock();
     	   cpuTime = std::difftime(end, start)/CLOCKS_PER_SEC;
+
            evaluator.Reset();
     	   int nNodes = checkedNodes;
     	   checkedNodes = 0;
+
            if(outputIndicator > 0) {
 	       std::cout << "depth = " << depth << " move: " << bestMoves[0] << " score = " << score << std::endl;
                std::cout << "checked " << nNodes << " nodes in " << cpuTime << " s " << nNodes/cpuTime << " nodes/s \n";
@@ -80,7 +91,6 @@ Move SearchAgent::GetBestMove(int outputIndicator) {
                std::cout << std::endl;
            }
         }
-        // std::cout << std::endl;
 	return bestMoves[0];
 }
 

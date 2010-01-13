@@ -43,16 +43,13 @@ public:
 
     int From() const { return from1; }
     int To() const { return to1; }
-    //int From2() const { return from2; }
-    //int To2() const { return to; }
-    //Piece* Piece1() const { return piece1; }
-    //Piece* Piece2() const { return piece2; }
+
     bool IsCapture() { return type & 1; }
-    //void SetCapturedPiece(Piece* piece) { captured = piece; }
-    //Piece* GetCapturedPiece() const { return captured; }
+
     std::string Move2Can() const;
     void Print();
     int GetScore() const { return score; }
+
 private:
     Move(Type t, int from1, int to1, Piece* p1 = 0, Piece* p2 = 0, int from2 = -1, int to2 = -1, int score = 0)
     : from1(from1), to1(to1), from2(from2), to2(to2), piece1(p1), piece2(p2), type(t), score(score) {}
