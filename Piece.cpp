@@ -293,12 +293,12 @@ bool Knight::GenerateMoves(Moves& moves, Board& board) const {
 Pawn::Pawn(Side s, int square) : Piece(s, square) {
     if(side == WHITE) {
         shortName = 'P';
-        ray[0] = -10; // advance one step
-        ray[1] = -11; // capture right
-        ray[2] = -9;  // capture left
+        ray[0] = -10; // advance one step, in mailbox coordinates
+        ray[1] = -11; // capture right, in mailbox coordinates
+        ray[2] = -9;  // capture left, in mailbox coordinates
         // misuse as marker
         ray[4] = 6;   // start row
-        ray[5] = 3;   //
+        ray[5] = 8;   // one row back, in board coordinates
         ray[7] = 0;   // promotion row
     } else {
         shortName = 'p';
@@ -307,7 +307,7 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
         ray[2] = 9;  // capture left
         // misuse as marker
         ray[4] = 1;   // start row
-        ray[5] = 4;   //
+        ray[5] = -8;  // one row back, in board coordinates
         ray[7] = 7;   // promotion row
     }
     score = PAWN;
@@ -327,6 +327,10 @@ bool Pawn::CanMoveTo(int destination, Board& board) const {
     // capture
     if( destination == mailbox[ mailbox2board[square] + ray[1] ]  && board.IsOccupied(destination) ) return true;
     if( destination == mailbox[ mailbox2board[square] + ray[2] ]  && board.IsOccupied(destination) ) return true;
+
+    // enpassant capture
+    if( destination == mailbox[ mailbox2board[square] + ray[1] ]  && board.GetEnPassantSquare() == destination ) return true;
+    if( destination == mailbox[ mailbox2board[square] + ray[2] ]  && board.GetEnPassantSquare() == destination ) return true;
     
     //advance one step
     int onestep = mailbox[ mailbox2board[square] + ray[0] ];
@@ -361,6 +365,8 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
                 }
                 else moves.Insert(Move::CreateCaptureMove(square, to, board.GetPiece(square), board.GetPiece(to)));
             }
+        } else if (to == board.GetEnPassantSquare()) {
+            moves.Insert(Move::CreateEnPassantCaptureMove(square, to, to + ray[5], board.GetPiece(square), board.GetPiece(to + ray[5])));
         }
     }
 
@@ -382,7 +388,7 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
             int ep = to;
             to = mailbox[ mailbox2board[to] + ray[0] ];
             //std::cout << square/8 << "  " << ray[4] << std::endl;
-            if( board.IsEmpty(to) ) moves.Insert(Move::CreateEpMove(square, to, ep, board.GetPiece(square)));
+            if( board.IsEmpty(to) ) moves.Insert(Move::CreateSetEnPassantMove(square, to, ep, board.GetPiece(square)));
         }
     }
 

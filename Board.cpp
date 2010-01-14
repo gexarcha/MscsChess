@@ -229,8 +229,18 @@ void Board::DoMove(std::string move) {
     }  else if(move.size() == 5 && move[4] == 'n') {
        if(toPiece) m = Move::CreateCapturePromotion2KnightMove(from, to, fromPiece, toPiece);
        else m= Move::CreateNormalPromotion2KnightMove(from, to, fromPiece);
-    } else if(toPiece) m = Move::CreateCaptureMove(from, to, fromPiece, toPiece);
-    else m= Move::CreateNormalMove(from, to, fromPiece);
+    } else if(toPiece) {
+        m = Move::CreateCaptureMove(from, to, fromPiece, toPiece);
+    } else if( dynamic_cast<Pawn*>(fromPiece) ) { 
+        if( to == enpassantSquare ) {
+            int ep = (from > to) ? to + 8 : to - 8;
+            m = Move::CreateEnPassantCaptureMove(from, to, ep, fromPiece, board[ep] );
+        } else if(from - to == 16) {
+            m = Move::CreateSetEnPassantMove(from, to, from-8, fromPiece);
+        } else if(to - from == 16) {
+            m = Move::CreateSetEnPassantMove(from, to, from+8, fromPiece);
+        } else m= Move::CreateNormalMove(from, to, fromPiece);
+    } else m= Move::CreateNormalMove(from, to, fromPiece);
     // now we have a legal move, do it
     if( !DoMove( m ) ) throw std::string("Invalid: you are in check");
 

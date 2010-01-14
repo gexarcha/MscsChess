@@ -16,7 +16,7 @@ void Move::Do(Board& board) {
 
     castlingStatusBackup = board.GetCastlingFlag();
     board.SetCastlingFlag(castlingStatusBackup & piece1->GetCastlingMask());
-    board.SetEnPassantSquare(epSquare);
+    epSquare = board.ExchangeEnPassantSquare(epSquare);
     
 
     board.MoveTo(piece2, from2, to2);
@@ -45,7 +45,8 @@ void Move::Do(Board& board) {
 }
 
 void Move::Undo(Board& board) {
-	board.SetCastlingFlag(castlingStatusBackup);
+    board.SetCastlingFlag(castlingStatusBackup);
+    epSquare = board.ExchangeEnPassantSquare(epSquare);
 
     board.MoveTo(piece1, to1, from1);
     board.MoveTo(piece2, to2, from2);

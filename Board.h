@@ -76,6 +76,8 @@ public:
     int GetCastlingFlag() const { return castlingFlag; }
     void SetCastlingFlag(int status) { castlingFlag = status; }
     void SetEnPassantSquare(int epSquare) { enpassantSquare=epSquare;}
+    int GetEnPassantSquare() const { return enpassantSquare; }
+    int ExchangeEnPassantSquare(int ep) { int temp = enpassantSquare; enpassantSquare = ep; return temp; }
 
 private:
 
