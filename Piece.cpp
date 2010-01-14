@@ -379,9 +379,10 @@ bool Pawn::GenerateMoves(Moves& moves, Board& board) const {
 
         if( ray[4] == square/8 ) {
             // advance on more step
+            int ep = to;
             to = mailbox[ mailbox2board[to] + ray[0] ];
             //std::cout << square/8 << "  " << ray[4] << std::endl;
-            if( board.IsEmpty(to) ) moves.Insert(Move::CreateNormalMove(square, to, board.GetPiece(square)));
+            if( board.IsEmpty(to) ) moves.Insert(Move::CreateEpMove(square, to, ep, board.GetPiece(square)));
         }
     }
 

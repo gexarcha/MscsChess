@@ -35,6 +35,7 @@ public:
     inline static Move CreateCapturePromotion2BishopMove(int from, int to, Piece* pawn, Piece* captured);
     inline static Move CreateNormalPromotion2KnightMove(int from, int to, Piece* pawn);
     inline static Move CreateCapturePromotion2KnightMove(int from, int to, Piece* pawn, Piece* captured);
+    inline static Move CreateEpMove(int from, int to, int ep, Piece* piece);
 
     bool IsPromotion() const { return type > 15; }
 
@@ -54,7 +55,7 @@ public:
 
 private:
     Move(Type t, int from1, int to1, Piece* p1 = 0, Piece* p2 = 0, int from2 = -1, int to2 = -1, int score = 0)
-    : from1(from1), to1(to1), from2(from2), to2(to2), piece1(p1), piece2(p2), type(t), score(score) {}
+    : from1(from1), to1(to1), from2(from2), to2(to2), piece1(p1), piece2(p2), type(t), score(score), epSquare(-1) {}
     int from1;
     int to1;
     int from2;
@@ -64,6 +65,7 @@ private:
     Type type;
     int castlingStatusBackup;
     int score;
+    int epSquare;
 };
 
 Move Move::CreateNormalMove(int from, int to, Piece* piece) {
@@ -116,6 +118,10 @@ Move Move::CreateNormalPromotion2KnightMove(int from, int to, Piece* piece) {
 
 Move Move::CreateCapturePromotion2KnightMove(int from, int to, Piece* piece, Piece* captured) {
     return Move(CAPTURE_PROMOTION2KNIGHT, from, to, piece, captured, from, -1);
+}
+
+Move Move::CreateEpMove(int from, int to, int ep, Piece* piece) {
+    return Move(NORMAL, from, to, piece, (Piece*) 0, -1, -1, ep);
 }
 
 

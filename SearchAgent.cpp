@@ -96,49 +96,4 @@ Move SearchAgent::GetBestMove(int outputIndicator) {
 	return bestMoves[0];
 }
 
-/*
-Move SearchAgent::GetBestMove() {
-	clock_t start, end;
-	double cpuTime;
 
-	int bestScoreSoFar = MIN_SCORE;
-	int alpha = MIN_SCORE;
-	int beta = MAX_SCORE;
-    Moves moves;
-    board.GeneratePseudoLegalMoves(moves);
-    Move bestMoveSoFar = moves[0];
-    int nMoves = moves.Size();
-    for(int i = 0; i < nMoves; ++i) {
-
-    	std::cout << "analyzing "  << moves[i] << std::endl;
-
-    	start = std::clock();
-    	board.ApplyMove(moves[i]);
-
-    	int score =  -AlphaBeta(2,-beta, -alpha);
-    	int nPos = evaluator.GetCheckedPositions();
-    	evaluator.Reset();
-    	int nNodes = checkedNodes;
-    	checkedNodes = 0;
-
-    	board.UndoMove();
-
-    	if(score > bestScoreSoFar) {
-    		bestScoreSoFar = score;
-    		bestMoveSoFar = moves[i];
-    	}
-
-    	end = clock();
-    	cpuTime = std::difftime(end, start)/CLOCKS_PER_SEC;
-
-    	std::cout << "checked positions: " << nPos << " in " << cpuTime << " s, or " <<nPos/cpuTime << " positions/s\n";
-    	std::cout << "checked nodes: " << nNodes << " in " << cpuTime << " s, or " <<nNodes/cpuTime << " nodes/s\n";
-    	std::cout << "score: " << score << " best score = " << bestScoreSoFar << "\n best move so far: " << bestMoveSoFar << std::endl;
-    	for(int i=0; i<MAX_PLY; ++i) std::cout << bestMoves[i] << ", ";
-    	std::cout << std::endl;
-    	if (bestScoreSoFar > alpha) alpha = bestScoreSoFar;
-
-    }
-    return bestMoveSoFar;
-}
-*/

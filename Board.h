@@ -75,6 +75,7 @@ public:
     void ApplyMove(Move move);
     int GetCastlingFlag() const { return castlingFlag; }
     void SetCastlingFlag(int status) { castlingFlag = status; }
+    void SetEnPassantSquare(int epSquare) { enpassantSquare=epSquare;}
 
 private:
 
