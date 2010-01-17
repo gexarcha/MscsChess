@@ -32,6 +32,169 @@ int Piece::mailbox2board[64] = {
     91, 92, 93, 94, 95, 96, 97, 98
 };
 
+// Piece Square Tables from:
+// http://chessprogramming.wikispaces.com/Simplified+evaluation+function
+
+int Piece::whitePawnPositionValue[64] = {
+     0,  0,  0,  0,  0,  0,  0,  0,
+    50, 50, 50, 50, 50, 50, 50, 50,
+    10, 10, 20, 30, 30, 20, 10, 10,
+     5,  5, 10, 25, 25, 10,  5,  5,
+     0,  0,  0, 20, 20,  0,  0,  0,
+     5, -5,-10,  0,  0,-10, -5,  5,
+     5, 10, 10,-20,-20, 10, 10,  5,
+     0,  0,  0,  0,  0,  0,  0,  0
+};
+
+int Piece::blackPawnPositionValue[64] = {   
+     0,  0,  0,  0,  0,  0,  0,  0,
+     5, 10, 10,-20,-20, 10, 10,  5,
+     5, -5,-10,  0,  0,-10, -5,  5,
+     0,  0,  0, 20, 20,  0,  0,  0,
+     5,  5, 10, 25, 25, 10,  5,  5,
+    10, 10, 20, 30, 30, 20, 10, 10,
+    50, 50, 50, 50, 50, 50, 50, 50,
+     0,  0,  0,  0,  0,  0,  0,  0
+};
+
+
+int Piece::whiteKnightPositionValue[64] = {
+    -50,-40,-30,-30,-30,-30,-40,-50,
+    -40,-20,  0,  0,  0,  0,-20,-40,
+    -30,  0, 10, 15, 15, 10,  0,-30,
+    -30,  5, 15, 20, 20, 15,  5,-30,
+    -30,  0, 15, 20, 20, 15,  0,-30,
+    -30,  5, 10, 15, 15, 10,  5,-30,
+    -40,-20,  0,  5,  5,  0,-20,-40,
+    -50,-40,-30,-30,-30,-30,-40,-50
+};
+
+int Piece::blackKnightPositionValue[64] = {
+    -50,-40,-30,-30,-30,-30,-40,-50,
+    -40,-20,  0,  5,  5,  0,-20,-40,
+    -30,  5, 10, 15, 15, 10,  5,-30,
+    -30,  0, 15, 20, 20, 15,  0,-30,
+    -30,  5, 15, 20, 20, 15,  5,-30,
+    -30,  0, 10, 15, 15, 10,  0,-30,
+    -40,-20,  0,  0,  0,  0,-20,-40,
+    -50,-40,-30,-30,-30,-30,-40,-50
+
+};
+
+int Piece::whiteBishopPositionValue[64] = {
+    -20,-10,-10,-10,-10,-10,-10,-20,
+    -10,  0,  0,  0,  0,  0,  0,-10,
+    -10,  0,  5, 10, 10,  5,  0,-10,
+    -10,  5,  5, 10, 10,  5,  5,-10,
+    -10,  0, 10, 10, 10, 10,  0,-10,
+    -10, 10, 10, 10, 10, 10, 10,-10,
+    -10,  5,  0,  0,  0,  0,  5,-10,
+    -20,-10,-10,-10,-10,-10,-10,-20
+};
+
+int Piece::blackBishopPositionValue[64] = {
+    -20,-10,-10,-10,-10,-10,-10,-20,
+    -10,  5,  0,  0,  0,  0,  5,-10,
+    -10, 10, 10, 10, 10, 10, 10,-10,
+    -10,  0, 10, 10, 10, 10,  0,-10,
+    -10,  5,  5, 10, 10,  5,  5,-10,
+    -10,  0,  5, 10, 10,  5,  0,-10,
+    -10,  0,  0,  0,  0,  0,  0,-10,
+    -20,-10,-10,-10,-10,-10,-10,-20
+};
+
+
+int Piece::whiteRockPositionValue[64] = {
+      0,  0,  0,  0,  0,  0,  0,  0,
+      5, 10, 10, 10, 10, 10, 10,  5,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+      0,  0,  0,  5,  5,  0,  0,  0
+};
+
+int Piece::blackRockPositionValue[64] = {
+      0,  0,  0,  5,  5,  0,  0,  0,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+     -5,  0,  0,  0,  0,  0,  0, -5,
+      5, 10, 10, 10, 10, 10, 10,  5,
+      0,  0,  0,  0,  0,  0,  0,  0
+};
+
+int Piece::whiteQueenPositionValue[64] = {
+    -20,-10,-10, -5, -5,-10,-10,-20,
+    -10,  0,  0,  0,  0,  0,  0,-10,
+    -10,  0,  5,  5,  5,  5,  0,-10,
+     -5,  0,  5,  5,  5,  5,  0, -5,
+      0,  0,  5,  5,  5,  5,  0, -5,
+    -10,  5,  5,  5,  5,  5,  0,-10,
+    -10,  0,  5,  0,  0,  0,  0,-10,
+    -20,-10,-10, -5, -5,-10,-10,-20
+
+};
+
+int Piece::blackQueenPositionValue[64] = {
+    -20,-10,-10, -5, -5,-10,-10,-20,
+    -10,  0,  5,  0,  0,  0,  0,-10,
+    -10,  5,  5,  5,  5,  5,  0,-10,
+      0,  0,  5,  5,  5,  5,  0, -5,
+     -5,  0,  5,  5,  5,  5,  0, -5,
+    -10,  0,  5,  5,  5,  5,  0,-10,
+    -10,  0,  0,  0,  0,  0,  0,-10,
+    -20,-10,-10, -5, -5,-10,-10,-20
+};
+
+
+int Piece::whiteKingMiddleGamePositionValue[64] = {
+    -30,-40,-40,-50,-50,-40,-40,-30,
+    -30,-40,-40,-50,-50,-40,-40,-30,
+    -30,-40,-40,-50,-50,-40,-40,-30,
+    -30,-40,-40,-50,-50,-40,-40,-30,
+    -20,-30,-30,-40,-40,-30,-30,-20,
+    -10,-20,-20,-20,-20,-20,-20,-10,
+     20, 20,  0,  0,  0,  0, 20, 20,
+     20, 30, 10,  0,  0, 10, 30, 20
+};
+
+int Piece::blackKingMiddleGamePositionValue[64] = {
+     20, 30, 10,  0,  0, 10, 30, 20,
+     20, 20,  0,  0,  0,  0, 20, 20,
+    -10,-20,-20,-20,-20,-20,-20,-10,
+    -20,-30,-30,-40,-40,-30,-30,-20,
+    -30,-40,-40,-50,-50,-40,-40,-30,
+    -30,-40,-40,-50,-50,-40,-40,-30,
+    -30,-40,-40,-50,-50,-40,-40,-30,
+    -30,-40,-40,-50,-50,-40,-40,-30
+
+};
+
+int Piece::whiteKingEndGamePositionValue[64] = {
+    -50,-40,-30,-20,-20,-30,-40,-50,
+    -30,-20,-10,  0,  0,-10,-20,-30,
+    -30,-10, 20, 30, 30, 20,-10,-30,
+    -30,-10, 30, 40, 40, 30,-10,-30,
+    -30,-10, 30, 40, 40, 30,-10,-30,
+    -30,-10, 20, 30, 30, 20,-10,-30,
+    -30,-30,  0,  0,  0,  0,-30,-30,
+    -50,-30,-30,-30,-30,-30,-30,-50
+};
+
+int Piece::blackKingEndGamePositionValue[64] = {
+    -50,-30,-30,-30,-30,-30,-30,-50,
+    -30,-30,  0,  0,  0,  0,-30,-30,
+    -30,-10, 20, 30, 30, 20,-10,-30,
+    -30,-10, 30, 40, 40, 30,-10,-30,
+    -30,-10, 30, 40, 40, 30,-10,-30,
+    -30,-10, 20, 30, 30, 20,-10,-30,
+    -30,-20,-10,  0,  0,-10,-20,-30,
+    -50,-40,-30,-20,-20,-30,-40,-50
+};
+
 Piece::~Piece() {}
 
 bool Piece::CrawlerAttacks(int destination) const {
@@ -118,12 +281,14 @@ King::King(Side s, int square) : Piece(s, square) {
     		castlingMask ^= Board::WHITE_QUEEN_SIDE;
     		castlingMask ^= Board::WHITE_KING_SIDE;
     	}
+        positionValue=whiteKingMiddleGamePositionValue; 
     } else {
     	shortName = 'k';
        	if (square == 4) {
         		castlingMask ^= Board::BLACK_QUEEN_SIDE;
         		castlingMask ^= Board::BLACK_KING_SIDE;
         }
+        positionValue=blackKingMiddleGamePositionValue; 
     }
     score = KING;
 
@@ -176,8 +341,10 @@ bool King::GenerateMoves(Moves& moves, Board& board) const {
 Queen::Queen(Side s, int square) : Piece(s, square) {
     if(side == WHITE){
     	shortName = 'Q';
+        positionValue=whiteQueenPositionValue; 
     } else {
-    	shortName = 'q';
+    	shortName = 'q';  
+        positionValue=blackQueenPositionValue; 
     }
     score = QUEEN;
     nRay = 8;
@@ -209,10 +376,12 @@ Rock::Rock(Side s, int square) : Piece(s, square) {
      	shortName = 'R';
      	if (square == 56) castlingMask ^= Board::WHITE_QUEEN_SIDE;
      	if (square == 63) castlingMask ^= Board::WHITE_KING_SIDE;
+        positionValue=whiteRockPositionValue; 
     } else {
      	shortName = 'r';
       	if (square == 0) castlingMask ^= Board::BLACK_QUEEN_SIDE;
         if (square == 7) castlingMask ^= Board::BLACK_KING_SIDE;
+        positionValue=blackRockPositionValue; 
     }
     score = ROCK;
     nRay = 4;
@@ -236,9 +405,11 @@ bool Rock::GenerateMoves(Moves& moves, Board& board) const {
 
 Bishop::Bishop(Side s, int square) : Piece(s, square) {
     if(side == WHITE){
-     	shortName = 'B';
+     	shortName = 'B';   
+        positionValue=whiteBishopPositionValue; 
     } else {
      	shortName = 'b';
+        positionValue=blackBishopPositionValue; 
     }
     score = BISHOP;
     nRay = 4;
@@ -263,8 +434,10 @@ bool Bishop::GenerateMoves(Moves& moves, Board& board) const {
 Knight::Knight(Side s, int square) : Piece(s, square) {
     if(side == WHITE){
      	shortName = 'N';
+        positionValue=whiteKnightPositionValue; 
     } else {
-     	shortName = 'n';
+     	shortName = 'n'; 
+        positionValue=blackKnightPositionValue; 
     }
     score = KNIGHT;
     nRay = 8;
@@ -293,6 +466,7 @@ bool Knight::GenerateMoves(Moves& moves, Board& board) const {
 Pawn::Pawn(Side s, int square) : Piece(s, square) {
     if(side == WHITE) {
         shortName = 'P';
+        positionValue=whitePawnPositionValue; 
         ray[0] = -10; // advance one step, in mailbox coordinates
         ray[1] = -11; // capture right, in mailbox coordinates
         ray[2] = -9;  // capture left, in mailbox coordinates
@@ -302,6 +476,7 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
         ray[7] = 0;   // promotion row
     } else {
         shortName = 'p';
+        positionValue=blackPawnPositionValue; 
         ray[0] = 10; // advance one step
         ray[1] = 11; // capture right
         ray[2] = 9;  // capture left

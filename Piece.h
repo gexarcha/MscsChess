@@ -25,7 +25,7 @@ public:
     void MoveTo(int to) { square = to;};
     virtual bool GenerateMoves(Moves& moves, Board& board) const = 0;
     int GetSquare() const  { return square; }
-    int GetScore() const { return (square < 0) ? 0 : score; }
+    int GetScore() const { return (square < 0) ? 0 : score + positionValue[square]; }
     //int UpdateCastlingFlags(int flags) const { return flags&castlingMask; }
     int GetCastlingMask() const { return castlingMask; }
 
@@ -49,9 +49,25 @@ protected:
     int nRay;
     int ray[8];
     char shortName;
+    int* positionValue;
 
     static int mailbox[120];
     static int mailbox2board[64];
+
+    static int whitePawnPositionValue[64];
+    static int whiteKnightPositionValue[64];
+    static int whiteBishopPositionValue[64];
+    static int whiteRockPositionValue[64];
+    static int whiteQueenPositionValue[64];
+    static int whiteKingMiddleGamePositionValue[64];
+    static int whiteKingEndGamePositionValue[64];
+    static int blackPawnPositionValue[64];
+    static int blackKnightPositionValue[64];
+    static int blackBishopPositionValue[64];
+    static int blackRockPositionValue[64];
+    static int blackQueenPositionValue[64];
+    static int blackKingMiddleGamePositionValue[64];
+    static int blackKingEndGamePositionValue[64];
 
 private:
 };
@@ -116,6 +132,5 @@ public:
     virtual bool GenerateMoves(Moves& moves, Board& board) const;
 
 };
-
 
 #endif
