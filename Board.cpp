@@ -402,11 +402,11 @@ void Board::RandomMove() {
 int Board::GetMaterialScore() const {
 	int score = 0;
     int nPieces = whitePieces.size();
-    for(int i=1; i<nPieces; ++i) {
+    for(int i=0; i<nPieces; ++i) {
         score += whitePieces[i]->GetScore();
     }
     nPieces = blackPieces.size();
-    for(int i=1; i<nPieces; ++i) {
+    for(int i=0; i<nPieces; ++i) {
          score -= blackPieces[i]->GetScore();
      }
 
