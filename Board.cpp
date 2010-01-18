@@ -242,11 +242,11 @@ void Board::DoMove(std::string move) {
         } else m= Move::CreateNormalMove(from, to, fromPiece);
     } else m= Move::CreateNormalMove(from, to, fromPiece);
     // now we have a legal move, do it
-    if( !DoMove( m ) ) throw std::string("Invalid: you are in check");
+    if( !DoMove( m ) ); //throw std::string("Invalid: you are in check");
 
     // are we in check?
     if( IsInCheck(sideToMove) ) {
-        cout << "check";
+        // cout << "check";
 
        // check whether we are checkmate
        Moves moves;
@@ -259,8 +259,10 @@ void Board::DoMove(std::string move) {
                break;
            }
        }
-       if(mate) cout << "mate";
-       cout << endl;
+       if(mate) {
+           if(sideToMove == Piece::WHITE) result = "0:1";
+           else                           result = "1:0"; 
+       }
     }
 }
 

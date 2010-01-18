@@ -54,6 +54,8 @@ public:
     std::string XSearchMove();
     bool IsUnderAttack(int square, Piece::Side s);
     bool IsInCheck(Piece::Side s);
+    bool IsOver() { return result.size() > 0; }
+    std::string Result() { return result; }
 
     Piece* GetPiece(int square) { return board[square]; }
 
@@ -91,6 +93,7 @@ private:
 
     std::vector<Move> moveStack;
     Piece::Side sideToMove;
+    std::string result;
 
     void PrintPieces();
 

@@ -22,7 +22,7 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta, vector<Move> & princi
 
         vector<Move> line;
         if(depth == 0) {
-                followPV = false;
+                //followPV = false;
         	if(moves[i].IsCapture()) score = -AlphaBeta(depth, -beta, -alpha, line);
         	else score = evaluator.Score();
         }

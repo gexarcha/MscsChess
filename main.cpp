@@ -358,6 +358,11 @@ void xboard(Board& board) {
 
              // do the move
              board.DoMove(command);
+             if(board.IsOver()) {
+                 cout << board.Result() << endl;
+                 logfile << "after " << command << " " << board.Result() << endl;
+                 continue;
+             }
 
              // get the move from the board
              string move = board.XSearchMove();
@@ -368,6 +373,14 @@ void xboard(Board& board) {
              // send it to xboard and the logfile
              cout << "move " << move << endl;
              logfile << "my move " << move << endl;
+
+             if(board.IsOver()) {
+                 cout << board.Result() << endl;
+                 logfile << board.Result() << endl;
+                 continue;
+             }
+
+  
          }
     }
 }
