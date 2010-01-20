@@ -12,9 +12,11 @@ public:
     enum Score {PAWN = 100, KNIGHT = 300, BISHOP = 325, ROCK = 500, QUEEN = 900, KING = 5000};
 
     virtual ~Piece();
+    virtual Piece* Clone() = 0;
 
-    bool IsWhite() const { return side==WHITE; };
-    bool IsBlack() const { return side==BLACK; };
+    bool IsWhite() const { return side==WHITE; }
+    bool IsBlack() const { return side==BLACK; }
+    bool IsValid() const { return square != -1; }
     Side GetSide() const { return side; };
     Side GetOppositeSide() const { return (side == WHITE) ? BLACK : WHITE; };
 
@@ -79,6 +81,8 @@ class King : public Piece {
 public:
     King(Side s, int square);	
 
+    Piece* Clone() { return new King(*this); } 
+
     virtual bool Attacks(int destination, Board&) const;
     virtual bool CanMoveTo(int destination, Board& board) const;
     virtual bool GenerateMoves(Moves& moves, Board& board) const;
@@ -88,7 +92,8 @@ public:
 class Queen : public Piece {	
 public:
     Queen(Side s, int square);	
-    
+
+    Piece* Clone() { return new Queen(*this); } 
     virtual bool Attacks(int destination, Board& board) const;
     virtual bool CanMoveTo(int destination, Board& board) const;
     virtual bool GenerateMoves(Moves& moves, Board& board) const;
@@ -98,6 +103,7 @@ class Rock : public Piece {
 public:
     Rock(Side s, int square);	
 
+    Piece* Clone() { return new Rock(*this); } 
     virtual bool Attacks(int destination, Board& board) const;
     virtual bool CanMoveTo(int destination, Board& board) const;
     virtual bool GenerateMoves(Moves& moves, Board& board) const;
@@ -108,6 +114,7 @@ class Bishop : public Piece {
 public:
     Bishop(Side s, int square);	
 
+    Piece* Clone() { return new Bishop(*this); } 
     virtual bool Attacks(int destination, Board& board) const;
     virtual bool CanMoveTo(int destination, Board& board) const;
     virtual bool GenerateMoves(Moves& moves, Board& board) const;
@@ -117,6 +124,7 @@ class Knight : public Piece {
 public:
     Knight(Side s, int square);	
 
+    Piece* Clone() { return new Knight(*this); } 
     virtual bool Attacks(int destination, Board& ) const;
     virtual bool CanMoveTo(int destination, Board& board) const;
     virtual bool GenerateMoves(Moves& moves, Board& board) const;
@@ -127,6 +135,7 @@ class Pawn : public Piece {
 public:
     Pawn(Side s, int square);	
 
+    Piece* Clone() { return new Pawn(*this); } 
     virtual bool Attacks(int destination, Board&) const;
     virtual bool CanMoveTo(int destination, Board& board) const;
     virtual bool GenerateMoves(Moves& moves, Board& board) const;

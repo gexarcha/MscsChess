@@ -1,5 +1,6 @@
 #include "Board.h"
 #include "Piece.h"
+#include "Utilities.h"
 
 #include <vector>
 using std::vector;
@@ -24,11 +25,38 @@ class Compare {
 
 Board::Board() : board(64,(Piece*)0) {}
 
-void Board::Init(const std::string& fenPosition) {
-	istringstream in(fenPosition);
+Board::Board(const Board &oldBoard) : board(64,(Piece*)0) {
+    for(int i=0; i<oldBoard.whitePieces.size(); ++i) {
+        if(oldBoard.whitePieces[i]->IsValid()) {
+            Piece *p = oldBoard.whitePieces[i]->Clone();
+            board[p->GetSquare()] = p;
+            whitePieces.push_back(p);
+        }
+    } 
+    for(int i=0; i<oldBoard.blackPieces.size(); ++i) {
+        if(oldBoard.blackPieces[i]->IsValid()) {
+            Piece *p = oldBoard.blackPieces[i]->Clone();
+            board[p->GetSquare()] = p;
+            blackPieces.push_back(p);
+        }
+    } 
+    castlingFlag = oldBoard.castlingFlag;
+    enpassantSquare = oldBoard.enpassantSquare;
+    fullMoveCounter = oldBoard.fullMoveCounter;
+    fiftyMoveRuleCounter = oldBoard.fiftyMoveRuleCounter;
 
-	string piecePlacement;
-	in >> piecePlacement;
+}
+
+Board::~Board() {
+    for(int i=0; i<whitePieces.size(); ++i) delete whitePieces[i];
+    for(int i=0; i<whitePieces.size(); ++i) delete blackPieces[i];
+}
+
+void Board::Init(const std::string& fenPosition) {
+    istringstream in(fenPosition);
+
+    string piecePlacement;
+    in >> piecePlacement;
 
     int iFen = 0;
     int iSquare = 0;
@@ -126,43 +154,43 @@ void Board::Init(const std::string& fenPosition) {
     sort( whitePieces.begin(), whitePieces.end(), Compare() );
     sort( blackPieces.begin(), blackPieces.end(), Compare() );
 
-	char activeColor;
+    char activeColor;
     in >> activeColor;
 
     if(activeColor == 'w') sideToMove = Piece::WHITE;
     else if(activeColor == 'b') sideToMove = Piece::BLACK;
     else throw "invalid char in fenPosition";
 
-	string castlingAvailability;
-	in >> castlingAvailability;
+    string castlingAvailability;
+    in >> castlingAvailability;
 
-	castlingFlag = 0;
-	for(int i=0; i<castlingAvailability.size(); ++i) {
-		switch(castlingAvailability[i]) {
-		case 'K':
-			castlingFlag |= WHITE_KING_SIDE;
-			break;
-		case 'k':
-			castlingFlag |= BLACK_KING_SIDE;
-			break;
-		case 'Q':
-			castlingFlag |= WHITE_QUEEN_SIDE;
-			break;
-		case 'q':
-			castlingFlag |= BLACK_QUEEN_SIDE;
-			break;
-		case '-':
-			break;
-		default:
-			throw "invalid char in fenPosition";
-		}
+    castlingFlag = 0;
+    for(int i=0; i<castlingAvailability.size(); ++i) {
+	switch(castlingAvailability[i]) {
+	case 'K':
+	    castlingFlag |= WHITE_KING_SIDE;
+	    break;
+	case 'k':
+	    castlingFlag |= BLACK_KING_SIDE;
+	    break;
+	case 'Q':
+	    castlingFlag |= WHITE_QUEEN_SIDE;
+	    break;
+	case 'q':
+	    castlingFlag |= BLACK_QUEEN_SIDE;
+	    break;
+	case '-':
+	    break;
+	default:
+	    throw "invalid char in fenPosition";
 	}
+    }
 
-	string enpassantSquareString;
+    string enpassantSquareString;
     in >> enpassantSquareString;
 
     if(enpassantSquareString == "-") enpassantSquare = 0;
-    else enpassantSquare = string2square(enpassantSquareString);
+    else enpassantSquare = StringToSquare(enpassantSquareString);
 
     in >> fiftyMoveRuleCounter >> fullMoveCounter;
 
@@ -185,63 +213,16 @@ void Board::Show() {
 
 void Board::DoMove(std::string move) {
 
-    // a move must have 4 or 5 characters
-    if( move.size() < 4 ) throw std::string("Invalid command: ") + move;
-
-
-    // decode from and to field
-    int from = -1;
-    int to = -1 ;
-    if( move.size() >= 4 ) {
-       std::string fromString(move,0,2);
-       std::string toString(move,2,2);
-
-       from = string2square(fromString);
-       to = string2square(toString);
-
-       if (from == -1 || to == -1) throw std::string("Invalid command: ") + move;
-    }
-
-    // now check whether the move is valid
-    if( IsEmpty(from) ) throw std::string("Invalid Move: from square empty");
-    if( !IsSide(sideToMove, from) ) throw std::string("Invalid Move: wrong color");
-    if( !board[from]->CanMoveTo(to, *this) ) throw std::string("Invalid Move ");
-
     Move m;
-    Piece* fromPiece = board[from];
-    Piece* toPiece = board[to];
-
-    if(move == "e1g1" || move == "e8g8") {
-    	if(IsCastleKingSidePossible()) m = Move::CreateKingSideCastlingMove(from, fromPiece, GetPiece(from+3));
-    	else throw std::string("king side castling not allowed");
-    } else if(move == "e1c1" || move == "e8c8") {
-    	if(IsCastleQueenSidePossible()) m = Move::CreateQueenSideCastlingMove(from, fromPiece, GetPiece(from-4));
-    	else throw std::string("queen side castling not allowed");
-    } else if(move.size() == 5 && move[4] == 'q') {
-       if(toPiece) m = Move::CreateCapturePromotion2QueenMove(from, to, fromPiece, toPiece);
-       else m= Move::CreateNormalPromotion2QueenMove(from, to, fromPiece);
-    }  else if(move.size() == 5 && move[4] == 'r') {
-       if(toPiece) m = Move::CreateCapturePromotion2RockMove(from, to, fromPiece, toPiece);
-       else m= Move::CreateNormalPromotion2RockMove(from, to, fromPiece);
-    }  else if(move.size() == 5 && move[4] == 'b') {
-       if(toPiece) m = Move::CreateCapturePromotion2BishopMove(from, to, fromPiece, toPiece);
-       else m= Move::CreateNormalPromotion2BishopMove(from, to, fromPiece);
-    }  else if(move.size() == 5 && move[4] == 'n') {
-       if(toPiece) m = Move::CreateCapturePromotion2KnightMove(from, to, fromPiece, toPiece);
-       else m= Move::CreateNormalPromotion2KnightMove(from, to, fromPiece);
-    } else if(toPiece) {
-        m = Move::CreateCaptureMove(from, to, fromPiece, toPiece);
-    } else if( dynamic_cast<Pawn*>(fromPiece) ) { 
-        if( to == enpassantSquare ) {
-            int ep = (from > to) ? to + 8 : to - 8;
-            m = Move::CreateEnPassantCaptureMove(from, to, ep, fromPiece, board[ep] );
-        } else if(from - to == 16) {
-            m = Move::CreateSetEnPassantMove(from, to, from-8, fromPiece);
-        } else if(to - from == 16) {
-            m = Move::CreateSetEnPassantMove(from, to, from+8, fromPiece);
-        } else m= Move::CreateNormalMove(from, to, fromPiece);
-    } else m= Move::CreateNormalMove(from, to, fromPiece);
-    // now we have a legal move, do it
+    Moves moves;
+    GeneratePseudoLegalMoves(moves); 
+    for(int i=0; i<moves.Size(); ++i) {
+        if(move == moves[i].ToCanString()) {
+            m = moves[i];
+            break;
+        }
+    }
+    if( m.GetType() == Move::UNKNOWN ) throw std::string("invalid move: ") + move;
     if( !DoMove( m ) ); //throw std::string("Invalid: you are in check");
 
     // are we in check?
@@ -315,14 +296,6 @@ void Board::UndoMove() {
     SwitchSide();
 }
 
-int Board::string2square(std::string square) {
-   int column = square[0] - 'a';
-   int line = square[1] - '1';
-
-   if( -1 < column && column < 8 && -1 < line && line < 8)
-      return (7 - line) * 8 + column;
-   else return -1;
-}
 
 void Board::SwitchSide() {
    if (sideToMove == Piece::WHITE ) sideToMove = Piece::BLACK;
@@ -368,39 +341,6 @@ bool Board::GenerateCaptureMoves(Moves & captures) {
     return  true;
 }
 
-void Board::RandomMove() {
-    Moves moves;
-    GeneratePseudoLegalMoves(moves);
-    bool done = false;
-    while(!done) {
-        int i = rand() % moves.Size();      
-        // cout << "RandomMove: i = " << i << " out of " << moves.Size() << endl;
-        Move m = moves[i];
-        if( DoMove(m) ) {
-        	done=true;
-        	cout << m;
-        }
-    }
-
-    if( IsInCheck(sideToMove) ) {
-        cout << " check";
-
-       // check whether we are checkmate
-       Moves moves;
-       GeneratePseudoLegalMoves(moves); 
-       int n = moves.Size();
-       bool mate = true;
-       for(int i=0; i<n; ++i) {
-           if( TryMove(moves[i]) ) {
-               mate = false;
-               break;
-           }
-       }
-       if(mate) cout << "mate";
-    }
-    cout << endl;
-}
-
 int Board::GetMaterialScore() const {
 	int score = 0;
     int nPieces = whitePieces.size();
@@ -415,66 +355,6 @@ int Board::GetMaterialScore() const {
     return score;
 }
 
-std::string square2string(int square) {
-   int line = square/8;
-   std::string result;
-   switch(square%8) {
-       case 0: result += 'a'; break;
-       case 1: result += 'b'; break;
-       case 2: result += 'c'; break;
-       case 3: result += 'd'; break;
-       case 4: result += 'e'; break;
-       case 5: result += 'f'; break;
-       case 6: result += 'g'; break;
-       case 7: result += 'h'; break;
-   }
-   switch(square/8) {
-        case 0: result += '8'; break;
-        case 1: result += '7'; break;
-        case 2: result += '6'; break;
-        case 3: result += '5'; break;
-        case 4: result += '4'; break;
-        case 5: result += '3'; break;
-        case 6: result += '2'; break;
-        case 7: result += '1'; break;
-    }
-   return result;
-}
-
-#include "SearchAgent.h"
-
-Move Board::SearchMove(int outputIndicator) {
-	SearchAgent agent(*this);
-	Move move = agent.GetBestMove(outputIndicator);
-	return move;
-}
-
-string Board::XSearchMove() {
-	SearchAgent agent(*this);
-	Move move = agent.GetBestMove();
-	return square2string(move.From()) + square2string(move.To());
-}
-
-void Board::PrintPieces() {
-	for(int i=0; i<whitePieces.size(); ++i) whitePieces[i]->Print();
-	std::cout << std::endl;
-	for(int i=0; i<blackPieces.size(); ++i) blackPieces[i]->Print();
-	std::cout << std::endl;
-}
-
-std::string Board::XRandomMove() {
-    Moves moves;
-    GeneratePseudoLegalMoves(moves);
-    bool done = false;
-    Move m;
-    while(!done) {
-        int i = rand() % moves.Size();      
-        // cout << "RandomMove: i = " << i << " out of " << moves.Size() << endl;
-        m = moves[i];
-        if( DoMove(m) ) done=true;
-    }
-    return m.Move2Can();
-}
 
 bool Board::IsCastleKingSidePossible()  {
     int square = (sideToMove == Piece::WHITE) ? 60 : 4;

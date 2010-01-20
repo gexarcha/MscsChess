@@ -18,7 +18,6 @@ public:
     void Print() { for(int i=0; i<moves.size(); ++i) std::cout << moves[i] << ' '; std::cout << std::endl; }
     Move& operator[](int i) { return moves[i]; }
     int Size() { return moves.size(); }
-    Move GetRandom();
     void Sort() { std::sort( moves.begin(), moves.end(), ScoreSort() ); }
     bool Includes(const Move& m) {
         std::vector<Move>::iterator found = std::find(moves.begin(), moves.end(), m);

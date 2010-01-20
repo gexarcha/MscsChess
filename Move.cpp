@@ -1,9 +1,10 @@
 #include "Move.h"
+#include "Utilities.h"
 #include "Board.h"
 #include <iostream>
 
 std::ostream& operator<<(std::ostream& o, const Move& m) {
-        return ( o << m.Move2Can() );
+        return ( o << m.ToCanString() );
 }
 
 bool operator==(const Move& left, const Move& right) {
@@ -65,9 +66,9 @@ void Move::Print() {
     std::cout << " type " << type << std::endl;
 }
 
-std::string Move::Move2Can() const {
-    std::string result = square2string(from1);
-    result += square2string(to1);
+std::string Move::ToCanString() const {
+    std::string result = SquareToString(from1);
+    result += SquareToString(to1);
     if(IsPromotion()) {
         char c[] = "qqrrbbnn";
         result += c[type-NORMAL_PROMOTION2QUEEN];

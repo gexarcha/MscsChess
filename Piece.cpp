@@ -303,6 +303,7 @@ King::King(Side s, int square) : Piece(s, square) {
     ray[7] = 11;
 }
 
+
 bool King::Attacks(int destination, Board&) const { 
     return CrawlerAttacks(destination); 
 }

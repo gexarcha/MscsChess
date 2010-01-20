@@ -5,15 +5,16 @@
 #include "Evaluator.h"
 #include "Move.h"
 #include <vector>
+#include <fstream>
 
 class SearchAgent {
 public:
-	SearchAgent(Board b) : board(b), evaluator(board), checkedNodes(0), ply(0) {}
+	SearchAgent(Board &b) : board(b), evaluator(board), checkedNodes(0), ply(0) { }
 
 	Move GetBestMove(int outputIndicator = 0);
 
 private:
-	Board board;
+	Board &board;
 	Evaluator evaluator;
 	std::vector<Move> bestMoves;
 	int checkedNodes;

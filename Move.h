@@ -47,7 +47,7 @@ public:
 
     bool IsCapture() { return type & 1; }
 
-    std::string Move2Can() const;
+    std::string ToCanString() const;
     void Print();
     int GetScore() const { return score; }
     void SetScore(int s) { score = s; }

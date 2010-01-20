@@ -10,8 +10,6 @@ int SearchAgent::AlphaBeta(int depth, int alpha, int beta, vector<Move> & princi
     int bestScore = MIN_SCORE;
     int score = MIN_SCORE;
 
-  
-
     Moves moves;
     if(!board.GeneratePseudoLegalMoves(moves)) return ILLEGAL;
     if( !(followPV && moves.Includes(bestMoves[ply]) ) ) followPV = false;
@@ -69,6 +67,7 @@ Move SearchAgent::GetBestMove(int outputIndicator) {
         start = std::clock();
 
         for(int depth = 0; depth < maxDepth; ++depth) {
+
            start = std::clock();
            if(depth > 0) followPV = true;
 	   int score = AlphaBeta(depth, MIN_SCORE, MAX_SCORE, bestMoves);

@@ -31,6 +31,9 @@ public:
 	enum CastlingFlags {WHITE_KING_SIDE = 1, WHITE_QUEEN_SIDE = 2, BLACK_KING_SIDE = 4, BLACK_QUEEN_SIDE = 8};
 
     Board();
+    Board(const Board& b);
+    ~Board();
+
     void Init(const std::string& fenPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     bool IsEmpty(int square) const { return board[square] == 0; };
     bool IsOccupied(int square) const { return !IsEmpty(square); };
@@ -48,13 +51,9 @@ public:
     bool DoMove(Move move);
     void MoveTo(Piece* piece, int from, int to);
     void UndoMove();
-    void RandomMove();
-    std::string XRandomMove();
-    Move SearchMove(int outputIndicator);
-    std::string XSearchMove();
     bool IsUnderAttack(int square, Piece::Side s);
     bool IsInCheck(Piece::Side s);
-    bool IsOver() { return result.size() > 0; }
+    bool IsGameOver() { return result.size() > 0; }
     std::string Result() { return result; }
 
     Piece* GetPiece(int square) { return board[square]; }
@@ -81,6 +80,7 @@ public:
     int GetEnPassantSquare() const { return enpassantSquare; }
     int ExchangeEnPassantSquare(int ep) { int temp = enpassantSquare; enpassantSquare = ep; return temp; }
 
+
 private:
 
     std::vector<Piece*> board;
@@ -101,10 +101,7 @@ private:
     void SwitchSide();
 
 
-    static int string2square(std::string square);
-
 };
 
-std::string square2string(int square);
 
 #endif
