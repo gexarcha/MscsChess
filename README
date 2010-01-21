@@ -6,4 +6,8 @@ cmake .
 
 make
 
-test
+The current version works with xboard as frontend:
+see http://www.gnu.org/software/xboard/
+- download it / make it
+- run MscsChess via 
+./xboard  -firstChessProgram /Path-to-MscsChess/XMscsChess
