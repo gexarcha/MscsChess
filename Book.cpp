@@ -2,32 +2,47 @@
 
 #include <fstream>
 #include <string>
-#include <vector>
+#include <list>
+#include <algorithm>
+
+#include <cmath>
 
 #include <iostream>
 
-Book::Book(std::string bookFileName) {
-    std::ifstream input(bookFileName.c_str());
-    std::string  line;
-    while(std::getline(input, line)) book.push_back(line);
+using namespace std;
 
-    //for(int i=0; i<book.size(); ++i) std::cout<< book[i] << std::endl;
+Book::Book(string bookFileName) {
+    
+    ifstream input(bookFileName.c_str());
+    string  line;
+    while(getline(input, line)) book.push_back(line);
 }
 
-std::string Book::GetNextMove(std::string line) {
-    std::string move;
-    if(line == "") {
-        int n = book.size();
-        int i = rand() % n;
-        move = book[i].substr(0,4);
-        return move;
-    }
-    for(int i=0; i<book.size(); ++i) {
-        if(book[i].find(line) == 0 && book[i].size() > line.size()) {
-           move = book[i];
-           move.erase(0,line.size()+1);
-           move = move.substr(0,4);
-        }
-    }
+struct NotLine {
+    NotLine(string line) : line(line) {}
+    bool operator()(string bookLine) { return bookLine.find(line) != 0; }
+    string line;
+};
+
+
+std::string Book::GetNextMove(string line) {
+
+    // first remove all not matching lines from the book
+    list<string>::iterator notInLine = remove_if(book.begin(), book.end(), NotLine(line) );
+    book.erase(notInLine, book.end());
+
+    // if no line is in the book, return
+    if(book.size() == 0) return "";
+
+    // find a random line
+    int i = rand() % book.size();
+    list<string>::iterator it = book.begin();
+    while(i--) ++it;
+    string move = *it;
+
+    // extract the move and return it
+    i = line.size() ? line.size() + 1 : 0;
+    move = move.substr(i,4);
     return move;
 }
+

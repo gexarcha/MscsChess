@@ -2,14 +2,15 @@
 #define BOOK_H
 
 #include <string>
-#include <vector>
+#include <list>
+
 
 class Book {
 public:
     Book(std::string bookFileName);
     std::string GetNextMove(std::string line);
 private:
-    std::vector<std::string> book;
+    std::list<std::string> book;
 };
 
 #endif
