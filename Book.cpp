@@ -16,6 +16,7 @@ Book::Book(string bookFileName) {
     ifstream input(bookFileName.c_str());
     string  line;
     while(getline(input, line)) book.push_back(line);
+    srand(time(0));
 }
 
 struct NotLine {

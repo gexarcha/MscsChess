@@ -6,6 +6,8 @@
 #include "SearchAgent.h"
 #include "Evaluator.h"
 
+class Book;
+
 class SimpleChessEngine: public Player {
 public:
     SimpleChessEngine();
@@ -18,6 +20,8 @@ public:
 private:
     Board *board;
     SearchAgent *searcher;
+    Book *book;
+    std::string line;
 };
 
 #endif

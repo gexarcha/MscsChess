@@ -3,15 +3,24 @@
 #include <iostream>
 using namespace std;
 
+void test();
+
 int main() {
     cout << "Starting test of the opening book" << endl;
+    for(int i=0; i<10; ++i) test();
+}
+
+void test() {
     Book book("book.txt");
-    cout << book.GetNextMove("") << endl;
-    cout << " test with \"e2e4\"" << endl;
-    cout << book.GetNextMove("e2e4") << endl;
-    cout << " test with \"e2e4 g7g6\"" << endl;
-    cout << book.GetNextMove("e2e4 g7g6") << endl;
-    cout << endl;
+    string move = book.GetNextMove("");
+    string line = move;
+    do {
+        cout << line << endl;
+        move = book.GetNextMove(line);
+        line += ' ' + move;
+    } while(move != "");
+    
+
 }
 
 

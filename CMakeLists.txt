@@ -7,6 +7,6 @@ project (CHESS)
 
 # add_executable(MscsChess main.cpp Board.cpp Piece.cpp Evaluator.cpp SearchAgent.cpp Move.cpp)
 
-add_executable(XMscsChess xmain.cpp Player.cpp SimpleChessEngine.cpp Board.cpp Piece.cpp Evaluator.cpp SearchAgent.cpp Move.cpp Utilities.cpp)
+add_executable(XMscsChess xmain.cpp Player.cpp SimpleChessEngine.cpp Board.cpp Piece.cpp Evaluator.cpp SearchAgent.cpp Move.cpp Utilities.cpp Book.cpp)
 
 add_executable(testBook testBook.cpp Book.cpp)
