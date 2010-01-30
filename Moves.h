@@ -15,9 +15,9 @@ class ScoreSort {
 class Moves {
 public:
     void Insert(Move m) { moves.push_back(m); }
-    void Print() { for(int i=0; i<moves.size(); ++i) std::cout << moves[i] << ' '; std::cout << std::endl; }
-    Move& operator[](int i) { return moves[i]; }
-    int Size() { return moves.size(); }
+    void Print() { for(size_t i=0; i<moves.size(); ++i) std::cout << moves[i] << ' '; std::cout << std::endl; }
+    Move& operator[](size_t i) { return moves[i]; }
+    size_t Size() { return moves.size(); }
     void Sort() { std::sort( moves.begin(), moves.end(), ScoreSort() ); }
     bool Includes(const Move& m) {
         std::vector<Move>::iterator found = std::find(moves.begin(), moves.end(), m);

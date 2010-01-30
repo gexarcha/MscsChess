@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #include <cmath>
-
+#include <ctime>
 #include <iostream>
 
 using namespace std;
@@ -16,7 +16,7 @@ Book::Book(string bookFileName) {
     ifstream input(bookFileName.c_str());
     string  line;
     while(getline(input, line)) book.push_back(line);
-    srand(time(0));
+    srand( (unsigned int)time(0) );
 }
 
 struct NotLine {
@@ -36,7 +36,7 @@ std::string Book::GetNextMove(string line) {
     if(book.size() == 0) return "";
 
     // find a random line
-    int i = rand() % book.size();
+    size_t i = rand() % book.size();
     list<string>::iterator it = book.begin();
     while(i--) ++it;
     string move = *it;

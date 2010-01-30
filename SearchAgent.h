@@ -18,7 +18,7 @@ private:
 	Evaluator evaluator;
 	std::vector<Move> bestMoves;
 	int checkedNodes;
-	int ply;
+	size_t ply;
 
         bool followPV;
 

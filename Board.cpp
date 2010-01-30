@@ -26,14 +26,14 @@ class Compare {
 Board::Board() : board(64,(Piece*)0) {}
 
 Board::Board(const Board &oldBoard) : board(64,(Piece*)0) {
-    for(int i=0; i<oldBoard.whitePieces.size(); ++i) {
+    for(size_t i=0; i<oldBoard.whitePieces.size(); ++i) {
         if(oldBoard.whitePieces[i]->IsValid()) {
             Piece *p = oldBoard.whitePieces[i]->Clone();
             board[p->GetSquare()] = p;
             whitePieces.push_back(p);
         }
     } 
-    for(int i=0; i<oldBoard.blackPieces.size(); ++i) {
+    for(size_t i=0; i<oldBoard.blackPieces.size(); ++i) {
         if(oldBoard.blackPieces[i]->IsValid()) {
             Piece *p = oldBoard.blackPieces[i]->Clone();
             board[p->GetSquare()] = p;
@@ -48,8 +48,8 @@ Board::Board(const Board &oldBoard) : board(64,(Piece*)0) {
 }
 
 Board::~Board() {
-    for(int i=0; i<whitePieces.size(); ++i) delete whitePieces[i];
-    for(int i=0; i<whitePieces.size(); ++i) delete blackPieces[i];
+    for(size_t i=0; i<whitePieces.size(); ++i) delete whitePieces[i];
+    for(size_t i=0; i<whitePieces.size(); ++i) delete blackPieces[i];
 }
 
 void Board::Init(const std::string& fenPosition) {
@@ -165,7 +165,7 @@ void Board::Init(const std::string& fenPosition) {
     in >> castlingAvailability;
 
     castlingFlag = 0;
-    for(int i=0; i<castlingAvailability.size(); ++i) {
+    for(size_t i=0; i<castlingAvailability.size(); ++i) {
 	switch(castlingAvailability[i]) {
 	case 'K':
 	    castlingFlag |= WHITE_KING_SIDE;
@@ -216,15 +216,15 @@ void Board::DoMove(std::string move) {
     Move m;
     Moves moves;
     GeneratePseudoLegalMoves(moves); 
-    for(int i=0; i<moves.Size(); ++i) {
+    for(size_t i=0; i<moves.Size(); ++i) {
         if(move == moves[i].ToCanString()) {
             m = moves[i];
             break;
         }
     }
     if( m.GetType() == Move::UNKNOWN ) throw std::string("invalid move: ") + move;
-    if( !DoMove( m ) ); //throw std::string("Invalid: you are in check");
-
+    //if( !DoMove( m ) ); //throw std::string("Invalid: you are in check");
+    DoMove(m);
     // are we in check?
     if( IsInCheck(sideToMove) ) {
         // cout << "check";
@@ -232,9 +232,9 @@ void Board::DoMove(std::string move) {
        // check whether we are checkmate
        Moves moves;
        GeneratePseudoLegalMoves(moves); 
-       int n = moves.Size();
+       size_t n = moves.Size();
        bool mate = true;
-       for(int i=0; i<n; ++i) {
+       for(size_t i=0; i<n; ++i) {
            if( TryMove(moves[i]) ) {
                mate = false;
                break;
@@ -306,8 +306,8 @@ bool Board::IsUnderAttack(int square, Piece::Side s) {
 	std::vector<Piece*>& playerPieces = (s == Piece::WHITE) ? whitePieces : blackPieces;
 	std::vector<Piece*>& oppositePieces = (s == Piece::WHITE) ? blackPieces : whitePieces;
 
-	int nPieces = oppositePieces.size();
-	for(int i=0; i<nPieces; ++i) {
+	size_t nPieces = oppositePieces.size();
+	for(size_t i=0; i<nPieces; ++i) {
             if( oppositePieces[i]->GetSquare() == -1) continue;
 	    if( oppositePieces[i]->Attacks(square, *this) ) return true;
 	}
@@ -324,8 +324,8 @@ bool Board::GeneratePseudoLegalMoves(Moves& moves) {
 
 	std::vector<Piece*>& pieces = (sideToMove == Piece::WHITE) ? whitePieces : blackPieces;
 
-    int nPieces = pieces.size();
-    for(int i=0; i<nPieces; ++i) { 
+    size_t nPieces = pieces.size();
+    for(size_t i=0; i<nPieces; ++i) { 
         if(pieces[i]->GetSquare() == -1) continue;
         if( !(pieces[i]->GenerateMoves(moves, *this)) ) return false;
     }
@@ -336,19 +336,19 @@ bool Board::GeneratePseudoLegalMoves(Moves& moves) {
 bool Board::GenerateCaptureMoves(Moves & captures) {
 	Moves moves;
     if(!GeneratePseudoLegalMoves(moves)) return false;
-    int nMoves = moves.Size();
-    for(int i=0; i<nMoves; ++i) if (moves[i].IsCapture()) captures.Insert(moves[i]);
+    size_t nMoves = moves.Size();
+    for(size_t i=0; i<nMoves; ++i) if (moves[i].IsCapture()) captures.Insert(moves[i]);
     return  true;
 }
 
 int Board::GetMaterialScore() const {
 	int score = 0;
-    int nPieces = whitePieces.size();
-    for(int i=0; i<nPieces; ++i) {
+    size_t nPieces = whitePieces.size();
+    for(size_t i=0; i<nPieces; ++i) {
         score += whitePieces[i]->GetScore();
     }
     nPieces = blackPieces.size();
-    for(int i=0; i<nPieces; ++i) {
+    for(size_t i=0; i<nPieces; ++i) {
          score -= blackPieces[i]->GetScore();
      }
 

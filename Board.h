@@ -35,7 +35,7 @@ public:
     ~Board();
 
     void Init(const std::string& fenPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    bool IsEmpty(int square) const { return board[square] == 0; };
+    bool IsEmpty(int square) const { if(square==-1) return true; return board[square] == 0; };
     bool IsOccupied(int square) const { return !IsEmpty(square); };
     bool IsSide(Piece::Side s, int square) const { 
         if(IsEmpty(square)) return false;
@@ -43,7 +43,7 @@ public:
     }
 
     bool IsKing(int square) const { 
-        return dynamic_cast<King*>(board[square]); 
+        return dynamic_cast<King*>(board[square]) != 0; 
     }
 
     void Show();
@@ -62,9 +62,9 @@ public:
 
     bool GeneratePseudoLegalMoves(Moves& moves);
     bool GenerateCaptureMoves(Moves& moves);
-
-    bool CastleKingSideAllowed() const { return ( sideToMove == Piece::WHITE ? castlingFlag&WHITE_KING_SIDE : castlingFlag&BLACK_KING_SIDE); }
-    bool CastleQueenSideAllowed() const { return ( sideToMove == Piece::WHITE ? castlingFlag&WHITE_QUEEN_SIDE : castlingFlag&BLACK_QUEEN_SIDE); }
+    inline bool CastleKingSideAllowed() const;
+    inline bool CastleQueenSideAllowed() const;
+ 
     bool IsCastleKingSidePossible();
     bool IsCastleQueenSidePossible();
     Piece::Side SideToMove() const { return sideToMove; }
@@ -103,5 +103,14 @@ private:
 
 };
 
+bool Board::CastleKingSideAllowed() const { 
+	if( sideToMove == Piece::WHITE ) return (castlingFlag&Board::WHITE_KING_SIDE) == Board::WHITE_KING_SIDE;
+	else                             return (castlingFlag&Board::BLACK_KING_SIDE) == Board::WHITE_KING_SIDE; 
+}
+
+bool Board::CastleQueenSideAllowed() const { 
+	if( sideToMove == Piece::WHITE ) return (castlingFlag&Board::WHITE_QUEEN_SIDE) == Board::WHITE_QUEEN_SIDE; 
+	else                             return	(castlingFlag&Board::BLACK_QUEEN_SIDE) == Board::BLACK_QUEEN_SIDE;
+}
 
 #endif
