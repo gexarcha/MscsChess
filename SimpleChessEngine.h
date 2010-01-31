@@ -13,10 +13,12 @@ public:
     SimpleChessEngine();
     ~SimpleChessEngine();
     void Init(std::string fenString);
+    void InitBook(std::string bookFile);
     void DoMove(std::string canString);
     std::string NextMove();
     bool IsGameOver();
     std::string Result();
+	void Show();
 private:
     Board *board;
     SearchAgent *searcher;

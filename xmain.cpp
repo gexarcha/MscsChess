@@ -3,10 +3,6 @@
 
 This is the example project of the winter 2009/2010 Software Design and Construction class.
 
-\todo fix init() which does not clear the board
-
-\todo remove test from main
-
 \todo refine Evaluator
 
 \todo introduce Opening Book
@@ -64,6 +60,7 @@ int main() {
 
          if(command == "new") {
              player->Init("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+			 player->InitBook("book.txt");
              continue;
          }
 
@@ -116,9 +113,26 @@ int main() {
                  logfile << player->Result() << endl;
                  continue;
              }
-
-
          }
+
+		 if(command.find("setboard") == 0) {
+
+             // execute he the setboard command:
+             // "setboard fen"  whith "fen" = a position in fen notation
+
+             // erase "setboard "
+             command.erase(0,9);
+
+			 // send the position to the player
+             player->Init(command);
+
+             continue;
+
+		 }
+          
+		 // show an ascii representation of the current board
+		 // used without xboard
+		 if(command == "show") player->Show();
     }
 
     delete player;

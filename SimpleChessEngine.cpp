@@ -12,13 +12,19 @@ SimpleChessEngine::~SimpleChessEngine() {
 
 void SimpleChessEngine::Init(std::string fenString) {
     delete board;
-    delete searcher;
-
     board = new Board();
     board->Init(fenString);
 
+    delete searcher;
     searcher = new SearchAgent(*board); 
-    book = new Book("book.txt");
+
+	delete book;
+    book = 0;
+}
+
+void SimpleChessEngine::InitBook(std::string bookFile) {
+	delete book;
+	book = new Book(bookFile);
 }
 
 void SimpleChessEngine::DoMove(std::string canString) {
@@ -53,5 +59,9 @@ bool SimpleChessEngine::IsGameOver() {
 
 std::string SimpleChessEngine::Result() {
     return board->Result();
+}
+
+void SimpleChessEngine::Show() {
+	board->Show();
 }
 

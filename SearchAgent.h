@@ -11,7 +11,7 @@ class SearchAgent {
 public:
 	SearchAgent(Board &b) : board(b), evaluator(board), checkedNodes(0), ply(0) { }
 
-	Move GetBestMove(int outputIndicator = 0);
+	Move GetBestMove();
 
 private:
 	Board &board;

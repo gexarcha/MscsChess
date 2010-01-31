@@ -308,7 +308,7 @@ bool Board::IsUnderAttack(int square, Piece::Side s) {
 
 	size_t nPieces = oppositePieces.size();
 	for(size_t i=0; i<nPieces; ++i) {
-            if( oppositePieces[i]->GetSquare() == -1) continue;
+        if( oppositePieces[i]->GetSquare() == -1) continue;
 	    if( oppositePieces[i]->Attacks(square, *this) ) return true;
 	}
 	return false;
