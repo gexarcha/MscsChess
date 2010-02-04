@@ -5,8 +5,6 @@ This is the example project of the winter 2009/2010 Software Design and Construc
 
 \todo refine Evaluator
 
-\todo introduce Opening Book
-
 \todo introduce time control
 
 \todo better interface to xboard
@@ -84,20 +82,7 @@ int main() {
              // now we have to do a move, that is also done after th go command, so just reuse it
              
              command = "go";
-/*
-             // get the move from the board
-             string move = player->NextMove();
 
-             // send it to xboard and the logfile
-             cout << "move " << move << endl;
-             logfile << "my move " << move << endl;
-
-             if(player->IsGameOver()) {
-                 cout << player->Result() << endl;
-                 logfile << player->Result() << endl;
-                 continue;
-             }
-*/
          }
 
          if(command == "go") {
@@ -115,20 +100,6 @@ int main() {
              }
          }
 
-		 if(command.find("setboard") == 0) {
-
-             // execute he the setboard command:
-             // "setboard fen"  whith "fen" = a position in fen notation
-
-             // erase "setboard "
-             command.erase(0,9);
-
-			 // send the position to the player
-             player->Init(command);
-
-             continue;
-
-		 }
           
 		 // show an ascii representation of the current board
 		 // used without xboard
