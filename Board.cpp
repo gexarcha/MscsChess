@@ -53,6 +53,7 @@ Board::~Board() {
 }
 
 void Board::Init(const std::string& fenPosition) {
+    Clear();
     istringstream in(fenPosition);
 
     string piecePlacement;
@@ -366,5 +367,17 @@ bool Board::IsCastleQueenSidePossible() {
     int square = (sideToMove == Piece::WHITE) ? 60 : 4;
 	return  CastleQueenSideAllowed() && IsEmpty(square-1) && IsEmpty(square-2) && IsEmpty(square-3)
 			&& !IsInCheck(sideToMove) && !IsUnderAttack(square-1, sideToMove) && !IsUnderAttack(square-2, sideToMove);
+}
+
+void Board::Clear() {
+     for(int i=0; i<64; ++i) board[i] = (Piece*)0;
+     for(int i=0; i<whitePieces.size(); ++i) {
+        delete whitePieces[i];
+     }
+     whitePieces.clear();
+          for(int i=0; i<blackPieces.size(); ++i) {
+        delete blackPieces[i];
+     }
+     blackPieces.clear();
 }
 

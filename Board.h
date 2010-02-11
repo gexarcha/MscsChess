@@ -99,6 +99,7 @@ private:
 
     bool TryMove(Move& move);
     void SwitchSide();
+    void Clear();
 
 
 };
