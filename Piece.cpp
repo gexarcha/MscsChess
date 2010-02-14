@@ -474,7 +474,7 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
         // misuse as marker
         ray[4] = 6;   // start row
         ray[5] = 8;   // one row back, in board coordinates
-        ray[7] = 0;   // promotion row
+        ray[7] = 1;   // from row for promotion
     } else {
         shortName = 'p';
         positionValue=blackPawnPositionValue; 
@@ -484,7 +484,7 @@ Pawn::Pawn(Side s, int square) : Piece(s, square) {
         // misuse as marker
         ray[4] = 1;   // start row
         ray[5] = -8;  // one row back, in board coordinates
-        ray[7] = 7;   // promotion row
+        ray[7] = 6;   // from row for promotion
     }
     score = PAWN;
 

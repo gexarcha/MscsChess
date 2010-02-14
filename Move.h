@@ -90,34 +90,34 @@ Move Move::CreateQueenSideCastlingMove(int fromKing, Piece* king, Piece* rock) {
 }
 
 Move Move::CreateNormalPromotion2QueenMove(int from, int to, Piece* piece) {
-    return Move(NORMAL_PROMOTION2QUEEN, from, to, piece, (Piece*) 0, from, -1);
+    return Move(NORMAL_PROMOTION2QUEEN, from, to, piece, (Piece*) 0, to, -1);
 }
 
 Move Move::CreateCapturePromotion2QueenMove(int from, int to, Piece* piece, Piece* captured) {
-    return Move(CAPTURE_PROMOTION2QUEEN, from, to, piece, captured, from, -1);
+    return Move(CAPTURE_PROMOTION2QUEEN, from, to, piece, captured, to, -1);
 }
 
 Move Move::CreateNormalPromotion2RockMove(int from, int to, Piece* piece) {
-    return Move(NORMAL_PROMOTION2ROCK, from, to, piece, (Piece*) 0, from, -1);
+    return Move(NORMAL_PROMOTION2ROCK, from, to, piece, (Piece*) 0, to, -1);
 }
 
 Move Move::CreateCapturePromotion2RockMove(int from, int to, Piece* piece, Piece* captured) {
-    return Move(CAPTURE_PROMOTION2ROCK, from, to, piece, captured, from, -1);
+    return Move(CAPTURE_PROMOTION2ROCK, from, to, piece, captured, to, -1);
 }
 
 Move Move::CreateNormalPromotion2BishopMove(int from, int to, Piece* piece) {
-    return Move(NORMAL_PROMOTION2BISHOP, from, to, piece, (Piece*) 0, from, -1);
+    return Move(NORMAL_PROMOTION2BISHOP, from, to, piece, (Piece*) 0, to, -1);
 }
 
 Move Move::CreateCapturePromotion2BishopMove(int from, int to, Piece* piece, Piece* captured) {
-    return Move(CAPTURE_PROMOTION2BISHOP, from, to, piece, captured, from, -1);
+    return Move(CAPTURE_PROMOTION2BISHOP, from, to, piece, captured, to, -1);
 }
 Move Move::CreateNormalPromotion2KnightMove(int from, int to, Piece* piece) {
-    return Move(NORMAL_PROMOTION2KNIGHT, from, to, piece, (Piece*) 0, from, -1);
+    return Move(NORMAL_PROMOTION2KNIGHT, from, to, piece, (Piece*) 0, to, -1);
 }
 
 Move Move::CreateCapturePromotion2KnightMove(int from, int to, Piece* piece, Piece* captured) {
-    return Move(CAPTURE_PROMOTION2KNIGHT, from, to, piece, captured, from, -1);
+    return Move(CAPTURE_PROMOTION2KNIGHT, from, to, piece, captured, to, -1);
 }
 
 Move Move::CreateSetEnPassantMove(int from, int to, int ep, Piece* piece) {

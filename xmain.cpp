@@ -36,7 +36,7 @@ int main() {
 
     ofstream logfile("logfile.txt");
 
-    cout << "feature myname=\"MscsCess.v0\"" << endl;
+    cout << "feature myname=\"MscsChess.v1\"" << endl;
     cout << "feature time=0" << endl;
     cout << "feature usermove=1" << endl;
     cout << "feature setboard=1" << endl;
@@ -60,6 +60,12 @@ int main() {
              player->Init("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 			 player->InitBook("book.txt");
              continue;
+         }
+        
+         if(command == "setboard") {
+              command.erase(0,9);
+              player->Init(command);
+              continue;
          }
 
          if(command.find("usermove") == 0) {
