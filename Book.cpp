@@ -43,7 +43,6 @@ std::string Book::GetNextMove(string line) {
 
     // extract the move
     i = line.size() ? line.size() + 1 : 0;
-    std::cout << "Book: " << move.size() << " " << i << std::endl;
     if(move.size() < i+3) move = "";
     else move = move.substr(i,4);
 
